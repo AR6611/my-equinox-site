@@ -1,0 +1,4350 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Equinox (Beta)</title>
+	<link rel="icon" href="/pictures/favicon-32x32.png" type="image/png" sizes="32x32">
+	
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+	</head>
+	<style>
+	/* oUIᵀᴹ
+Designed, Published By Equinox
+Designed For Equinox
+Current Version: oUI v2.6.9
+Add on To Equinox StockUI*/
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    margin: 0;
+    padding: 0;
+	background-color: #fff;
+}
+
+h1, h2, h3, .board-title {
+    font-family: 'Verdana', sans-serif;
+    font-weight: bold;
+    color: #333;
+}
+
+.navbar {
+    background: #000000;
+    border-bottom: 2px solid #ddd;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Added shadow */
+}
+
+.navbar .navbar-brand {
+    color: #333;
+    transition: color 0.3s; /* Transition for hover effect */
+}
+
+.navbar .navbar-nav .nav-link {
+    color: #333;
+    transition: color 0.2s; /* Transition for hover effect */
+}
+
+.navbar .navbar-brand:hover,
+.navbar .navbar-nav .nav-link:hover {
+    color: #007bff; /* Color change on hover */
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+	padding-top: 50px; /* Space for the fixed navbar */
+    margin: 15px 0;
+	margin-left: 250px; /* Adjust for sidebar width */
+    width: calc(100% - 250px);
+    transition: margin-left 0.3s ease, width 0.3s ease;
+}
+
+.search-bar input {
+    flex: 1;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    transition: border 0.3s, box-shadow 0.3s; /* Added box-shadow transition */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1); /* Increased shadow for input */
+}
+
+.search-bar input:focus {
+    border-color: #007bff;
+    box-shadow: 4px 6px 12px rgba(0, 123, 255, 0.5); /* Focus shadow */
+    outline: none;
+}
+
+.search-bar button {
+    margin-left: 10px;
+    transition: background 0.3s, box-shadow 0.3s; /* Added transition for button */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Initial button shadow */
+}
+
+.board-container {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    width: 1250px;
+    margin-left: 80px; /* Shift the container left */
+}
+
+.board {
+    background: #ffffff;
+    border-radius: 7px;
+    padding: 16px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.board:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.board-title {
+    font-size: 1.5em;
+    color: #333;
+    font-weight: 600;
+}
+
+.board-type {
+    color: #888;
+    margin-bottom: 12px;
+}
+
+.notes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.note {
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    padding: 3px;
+    position: relative;
+    background-color: #fdfdfd;
+    transition: box-shadow 0.3s, transform 0.2s; /* Added transform transition */
+    height: 150px;
+    overflow: hidden; /* Prevent overflow */
+}
+
+.note:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Hover shadow */
+    transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.note textarea {
+    width: 85%;
+    height: 130px;
+    border: none;
+    resize: none;
+    outline: none;
+    padding: 5px;
+    border-radius: 5px;
+    transition: border 0.3s;
+}
+
+.note textarea:focus {
+    outline: none;
+    border: 1px solid #007bff;
+    box-shadow: inset 0 0 10px rgba(0, 123, 255, 0.2);
+}
+
+.remove-note {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #e74c3c;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 25%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s; /* Added transition */
+}
+
+.remove-note:hover {
+    background: #c0392b;
+    transform: scale(1.1); /* Slight scale on hover */
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.add-subboard-button {
+    background-color: #007bff;
+    color: white;
+    transition: background 0.3s, transform 0.2s, box-shadow 0.3s; /* Added transitions */
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.2); /* Increased button shadow */
+}
+
+.add-subboard-button:hover {
+    background-color: #0056b3;
+    transform: translateY(-2px); /* Slight lift on hover */
+    box-shadow: 0 6px 16px rgba(0, 123, 255, 0.3); /* Enhanced shadow on hover */
+}
+
+.instructions {
+    margin-top: 20px;
+    background-color: #f8f9fa;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for instructions */
+	width: 1155px;
+	margin-left: 125px;
+}
+
+.instructions:hover {
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.sub-board {
+    background: #f0f8ff;
+    border: 1px dotted #ddd; /* Dotted border */
+    border-radius: 7px;
+    padding: 10px;
+    margin-top: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for sub-boards */
+    min-height: 140x; /* Minimum height */
+}
+
+.history-modal {
+    position: fixed;
+    top: 35%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 35px;
+    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    width: 520px; /* Increased width */
+    height: 500px; /* Height will not adjust based on content */
+    overflow-y: auto; /* Allow scrolling if content exceeds height */
+    border-radius: 7px;
+    transition: transform 0.3s, box-shadow 0.3s; /* Added transitions */
+}
+
+.history-entry {
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.resize-handle {
+    width: 75%;
+    height: 6px; /* Height of the resize handle */
+    background: gray; /* Color of the resize handle */
+    cursor: ns-resize; /* Change cursor on hover */
+    position: absolute; /* Position it absolutely */
+    bottom: 0; /* Stick it to the bottom */
+}
+
+.pin-button {
+    float: right;
+    margin-left: 10px;
+}
+ /* Table Styles */
+.tables-container {
+    margin: 15px 0; /* Space above and below tables */
+}
+
+.board-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.board-table th {
+    background-color: #f0f0f0; /* Light grey background for column denoters */
+    color: #333; /* Dark text for better readability */
+    font-size: 0.8rem; /* Adjust font size */
+    padding: 6px; /* Reduce padding for smaller cells */
+    text-align: center; /* Center-align text */
+    border: 1px solid #ccc; /* Subtle border for cells */
+}
+
+.board-table th:first-child {
+    background-color: #e6e6e6; /* Slightly darker grey for row number denoter */
+    color: #333; /* Match the text color */
+}
+
+.board-table td.number-cell {
+    background-color: #e6e6e6; /* Slightly darker grey for row number column */
+    font-size: 0.8rem; /* Smaller font size for number cells */
+    text-align: center; /* Center-align the numbers */
+    border: 1px solid #ccc; /* Add border for consistency */
+}
+
+.board-table td {
+    padding: 12px 18px;
+    text-align: left;
+    vertical-align: middle;
+    border-bottom: 1px solid #eaeaea;
+}
+
+.board-table td + td {
+    border-left: 1px solid #f5f5f5;
+}
+
+.board-table tr:nth-child(even) td {
+    background-color: #f9f9f9;
+}
+
+.board-table tr:nth-child(odd) td {
+    background-color: #ffffff;
+}
+
+.board-table tr:hover td {
+    background-color: #f1f8ff;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-responsive .board-table {
+    min-width: 600px;
+}
+
+.remove-table-button {
+    background-color: #dc3545;
+    color: #ffffff;
+    padding: 6px 10px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.remove-table-button:hover {
+    background-color: #c82333;
+}
+
+.board-table td.number-cell {
+    text-align: right;
+}
+
+.board-table td.center {
+    text-align: center;
+}
+
+
+/* Remove table button */
+.remove-table-button {
+    margin-top: 10px; /* Space above button */
+	margin-bottom: 10px; /* Space below button */
+	margin-left: 10px; /* Space right of button */
+    background-color: #dc3545; /* Red color for remove button */
+    color: #ffffff;
+    border: none;
+    padding: 10px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.remove-table-button:hover {
+    background-color: #c82333; /* Darker red on hover */
+}
+
+.tables-container {
+    margin: 15px 0; /* Space above and below tables */
+    padding: 10px; /* Optional: adds padding inside the tables container */
+}
+
+.note {
+    position: relative;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 12px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.note textarea {
+    width: 98%;
+    border: none;
+    resize: none;
+    outline: none;
+    padding: 5px;
+    border-radius: 4px;
+    min-height: 80px;
+}
+
+.note-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.remove-note {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.resize-handle {
+    width: 100%;
+    height: 5px;
+    background-color: #ddd;
+    cursor: ns-resize;
+    margin-top: 5px;
+}
+
+.board.pinned {
+    background: repeating-linear-gradient(45deg, #fafafa, #fafafa 10px, #f0f0f0 10px, #f0f0f0 20px);
+    border-left: 4px solid linear-gradient(45deg, #0004ff, #ff0000);
+}
+
+/* Primary Button */
+.btn-primary {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    box-shadow: 0 3px 6px rgba(0, 123, 255, 0.3); /* Soft shadow */
+    transition: background 0.2s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #0056b3, #003f8a); /* Darker on hover */
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057);
+    color: #fff;
+    border: none;
+    border-radius: 15px;
+    padding: 8px 20px;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(135deg, #495057, #343a40); /* Darker on hover */
+}
+
+/* Danger Button for 'Remove' actions */
+.btn-danger {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.3);
+    transition: background 0.2s;
+}
+
+.btn-danger:hover {
+    background: linear-gradient(135deg, #c82333, #a71d2a);
+}
+
+/* Info Button */
+.btn-info {
+    background: linear-gradient(135deg, #17a2b8, #117a8b);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    box-shadow: 0 3px 6px rgba(23, 162, 184, 0.3);
+    transition: background 0.2s;
+}
+
+.btn-info:hover {
+    background: linear-gradient(135deg, #117a8b, #0b5b6b);
+}
+
+/* Warning Button */
+.btn-warning {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    box-shadow: 0 3px 6px rgba(255, 193, 7, 0.3);
+    transition: background 0.2s;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #e0a800, #cc9a00);
+}
+
+/* Success Button */
+.btn-success {
+    background: linear-gradient(135deg, #28a745, #218838);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 20px;
+    box-shadow: 0 3px 6px rgba(40, 167, 69, 0.3);
+
+.note {
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.1);
+    padding: 12px;
+}
+
+.sub-board {
+    background: linear-gradient(135deg, #f0f8ff, #e0f7fa);
+    border: 2px dotted #007bff;
+    border-radius: 6px;
+    padding: 16px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.board-table {
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.board-table th {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    border-top: 1px solid #0056b3;
+}
+
+.board-table td {
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    transition: background-color 0.2s;
+}
+
+.board-table td:hover {
+    background-color: #f7faff;
+}
+
+/* Boards Container */
+/* Responsive grid for boards */
+.boards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Flexible column layout */
+    gap: 20px;
+    padding: 20px;
+}
+
+/* Board Card Styling */
+.board {
+    background: linear-gradient(135deg, #ffffff, #f3f6f9); /* Subtle gradient */
+    border: 1px solid #d0d4d8;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Light outer shadow */
+}
+
+/* Board hover effect */
+.board:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12); /* Deeper shadow on hover */
+    transform: translateY(-4px); /* Slight lift on hover */
+}
+
+/* Board Title */
+.board-title {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Board Type */
+.board-type {
+    font-size: 1em;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 15px;
+}
+
+/* Action Buttons Styling */
+.action-buttons .btn {
+    padding: 8px 12px;
+    font-size: 0.85em;
+    border-radius: 6px;
+    transition: background 0.3s ease, color 0.3s ease;
+    margin-right: 6px;
+}
+
+/* Specific Button Colors */
+.action-buttons .btn-danger {
+    background-color: #f44336;
+    color: #fff;
+}
+
+.action-buttons .btn-info {
+    background-color: #03a9f4;
+    color: #fff;
+}
+
+.action-buttons .btn-warning {
+    background-color: #ff9800;
+    color: #212529;
+}
+
+.action-buttons .btn-success {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.action-buttons .btn-secondary {
+    background-color: #9e9e9e;
+    color: #fff;
+}
+
+/* Notes styling within the board */
+.note {
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.05);
+}
+
+/* Notes textarea style */
+.note textarea {
+    width: 100%;
+    border: none;
+    resize: none;
+    outline: none;
+    padding: 5px;
+    border-radius: 4px;
+    min-height: 60px;
+}
+
+/* General Modal Styling for All Modals */
+.modal .modal-dialog {
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transform: translateY(-10px);
+    opacity: 0;
+}
+
+.modal.show .modal-dialog {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal-content {
+    border-radius: 12px; /* Rounded corners */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow */
+    border: none;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.modal-header {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.modal-title {
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-body {
+    padding-top: 10px;
+}
+
+.modal-footer {
+    border-top: none;
+    padding-top: 0;
+}
+
+.modal-header .close {
+    font-size: 1.5rem;
+    color: #888;
+    opacity: 0.8;
+    transition: color 0.2s, transform 0.2s;
+}
+
+.modal-header .close:hover {
+    color: #333;
+    opacity: 1;
+    transform: rotate(90deg);
+}
+
+/* Enhanced Buttons in Modals */
+.modal-footer .btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-footer .btn-primary {
+    background-color: #007bff;
+    border: none;
+    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.modal-footer .btn-primary:hover {
+    background-color: #0056b3;
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
+}
+
+.modal-footer .btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+.modal-footer .btn-secondary:hover {
+    background-color: #495057;
+    box-shadow: 0 6px 12px rgba(108, 117, 125, 0.4);
+}
+
+/* Styling for Textareas in Modals */
+.modal-body textarea {
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    padding: 12px;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.modal-body textarea:focus {
+    border-color: #007bff;
+    box-shadow: inset 0 0 6px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.note {
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.board-table th {
+    background-color: #e0e0e0; /* Grey background for denoters */
+    font-size: 0.8rem; /* Smaller font size */
+    padding: 6px; /* Decrease padding for smaller cell size */
+    text-align: center; /* Align text in the center */
+    border: 1px solid #ccc; /* Add a subtle border */
+}
+
+.board-table th:first-child {
+    background-color: #d6d6d6; /* Slightly darker grey for row numbers */
+}
+
+.board-table td.number-cell {
+    font-size: 0.8rem; /* Smaller font size for row numbers */
+    background-color: #f2f2f2; /* Light grey for the number column */
+    text-align: center; /* Center-align the numbers */
+}
+
+.formula-bar-container {
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #007bff, #0056b3); /* Gradient background */
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: white;
+}
+
+.formula-bar-container label {
+    font-weight: bold;
+    margin-right: 10px;
+    color: #fff;
+}
+
+.formula-bar {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    outline: none;
+    font-size: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.formula-bar:focus {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+    transform: scale(1.02);
+}
+
+.formula-bar-container .selected-cell {
+    margin-left: 10px;
+    font-size: 1rem;
+    font-weight: bold;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.formula-bar-container i {
+    margin-right: 10px;
+    font-size: 1.2rem;
+    color: #fff;
+}
+
+.sticky-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.sticky-note {
+    width: 100px;
+    height: 100px;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    cursor: grab;
+}
+
+.sticky-content {
+    font-weight: bold;
+    text-align: center;
+}
+
+.remove-sticky {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.remove-sticky:hover {
+    background-color: darkred;
+}
+
+.board-status {
+    display: inline-block;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: white;
+    padding: 2px 6px; /* Minimal padding for text highlight */
+    border-radius: 10px; /* Rounded edges for a pill-like appearance */
+}
+
+#sidebar {
+     position: fixed;
+    top: 56px; /* Adjust to the height of the navbar */
+    left: 0;
+    height: calc(100% - 56px); /* Adjust height to account for navbar */
+    width: 250px;
+    background: #f4f4f4;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1000; /* Lower z-index than navbar */
+}
+	
+#sidebar button {
+    margin: 10px 0;
+}
+
+#main-content {
+    margin-left: 250px; /* Same as sidebar width */
+    padding: 70px;
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+/* Ensure boards container adjusts properly */
+.board-container {
+    transition: margin-left 0.3s ease;
+    margin-left: 250px;
+    padding: 20px;
+}
+
+/* Adjust search bar width dynamically */
+.search-bar {
+    box-sizing: border-box;
+    margin-left: 250px; /* Align with sidebar */
+    padding-top: 70px; /* Space for fixed navbar */
+    width: calc(100% - 250px); /* Responsive width adjustment */
+    transition: margin-left 0.3s ease, width 0.3s ease, padding-top 0.3s ease;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+     #sidebar {
+        width: 200px; /* Narrower sidebar for smaller screens */
+    }
+
+    .search-bar,
+    .board-container {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+}
+
+/* Sidebar Styles */
+#sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 250px;
+    background: #f4f4f4;
+    padding: 10px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    z-index: 1000; /* Lower z-index than navbar */
+}
+
+/* Main Content Adjustments */
+#main-content {
+    margin-left: 250px; /* Adjust for sidebar width */
+    transition: margin-left 0.3s ease; /* Smooth transition */
+}
+
+#sidebar .list-group-item.active {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+}
+
+/*oUI is Only for StockUI and Not an Add on for Other UI Packs
+Use At your Own Risk
+Read Our Terms&Conditios and Privacy Policy for More Info*/
+</style>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#">Equinox <small><strong>V7 Mark I Preview</small></strong></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ml-auto">
+				<li class="nav-item">
+                    <a class="nav-link" href="#">Release Notes V7</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="search-bar">
+            <input type="text" id="search-input" placeholder="Search...">
+			<select id="filter-importance" class="form-control">
+        <option value="">All Importance</option>
+        <option value="Priority">Priority</option>
+        <option value="Defect">Defect</option>
+        <option value="Normal">Normal</option>
+    </select>
+
+    <select id="filter-status" class="form-control">
+        <option value="">All Status</option>
+        <option value="On Track">On Track</option>
+        <option value="At Risk">At Risk</option>
+        <option value="Off Track">Off Track</option>
+    </select>
+            <button class="btn btn-primary" id="add-new-board-button">+ New</button>
+            <button class="btn btn-secondary" id="export-boards-button">Export ↑</button>
+			<button id="import-boards-button" class="btn btn-secondary">Import ↓</button>
+        </div>
+		<!-- Sidebar Container -->
+<div id="sidebar" style="display: none;">
+    <button id="new-board-btn" class="btn btn-primary btn-lg" style="width: 100%; margin: 10px 0;">+ New</button>
+    <hr style="border-top: 1px solid #ccc; margin: 20px 0;">
+    <div id="board-list" class="list-group">
+        <!-- Dynamically created board names will appear here -->
+    </div>
+</div>
+
+<!-- Main Container -->
+<div id="main-content">
+    <!-- Existing content goes here -->
+</div>
+
+        <div class="board-container" id="boards-container">
+            <!-- Boards will be rendered here -->
+        </div>
+		
+       <div class="instructions">
+            <h5>We Are Still In Beta!</h5>
+            <p>The Version You are Using is in Beta, We Can't Assure This Version is A Bug Free Version.
+            <p>Version: equinox beta v7 mark 1 (build: Preview)</p>
+			<strong><p>Credits: Cloudfare, StackPath For Bootstrap, and JQuery.</p></strong>
+			<p><small><strong><a href="T&C.html">Terms and Conditions</a>, <a href="Privacy Policy.html">Privacy Policy</a></small></p>
+			<small><p>Powered By Gradient UI (Merged with oUI)</p></small>
+        </div>
+    </div>	
+
+    <!-- Modal for adding a board -->
+<div class="modal fade" id="boardTypeModal" tabindex="-1" role="dialog" aria-labelledby="boardTypeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="boardTypeModalLabel">+ New</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                    <input type="text" id="board-title-input" class="form-control" placeholder="Enter board title" required>
+                    <select id="board-type-select" class="form-control mt-3">
+					    <option value="Normal">Normal</option>
+                        <option value="Priority">Priority</option>
+                        <option value="Defect">Defect</option>
+                    </select>
+					<select id="board-status-select" class="form-control mt-3">
+                        <option value="On Track">On Track</option>
+                        <option value="At Risk">At Risk</option>
+                        <option value="Off Track">Off Track</option>
+                    </select>
+					<input type="date" id="board-due-date-input" class="form-control mt-3">
+                    <input type="color" id="colorPickerInput" class="form-control mt-3" value="#ffffff" />
+					<textarea id="board-description-input" class="form-control mt-3" rows="4" placeholder="Enter board description (optional)"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="add-board-confirm">+ Board</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal for adding a sub-board -->
+    <div class="modal fade" id="subBoardModal" tabindex="-1" role="dialog" aria-labelledby="subBoardModalLabel" aria-hidden="true">
+       <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="subBoardModalLabel">+ Sub-Board</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="text" id="sub-board-title-input" class="form-control" placeholder="Enter sub-board title" required>
+                    <select id="sub-board-type-select" class="form-control mt-3">
+                        <option value="Task">Task</option>
+                        <option value="Reminder">Reminder</option>
+                        <option value="Discussion">Discussion</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="add-sub-board-confirm">+ Sub-Board</button>
+                </div>
+            </div>
+        </div>
+    </div>
+	
+	<!-- Modal for adding a table --> <!-- Github Pass: Abiram@2011-->
+<div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTableModalLabel">Add Table +</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <label for="table-rows-input">Number of Rows (max 15):</label>
+                    <input type="number" id="table-rows-input" class="form-control" min="1" max="15" required>
+                </div>
+                <div class="mt-3">
+                    <label for="table-columns-input">Number of Columns (max 12):</label>
+                    <input type="number" id="table-columns-input" class="form-control" min="1" max="12" required>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="add-table-confirm">Create Table</button>
+            </div><span><small><strong><center>Formula Bar is in Beta</span></center></small></strong><br>
+        </div>
+    </div>
+</div>
+
+<!-- Import Data Modal -->
+<div class="modal fade" id="importDataModal" tabindex="-1" aria-labelledby="importDataModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="importDataModalLabel">Import Data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body d-flex justify-content-center">
+    <button id="select-file-button" class="btn btn-primary">Import File</button>
+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="exportModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exportModalLabel">Export Boards</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exportFileName">Export As</label>
+                    <input type="text" id="exportFileName" class="form-control" placeholder="Enter file name" required>
+                </div>
+                <div class="form-group">
+                    <label for="exportFormat">Export In</label>
+                    <select id="exportFormat" class="form-control">
+                        <option value="json">Export in JSON</option>
+                        <option value="xlsx">Export in XLSX</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="confirmExportButton">Export</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1" role="dialog" aria-labelledby="historyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historyModalLabel">Board History</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="max-height: 400px; overflow-y: auto;">
+                <ul id="historyList" class="list-group">
+                    <!-- History entries will be dynamically added here -->
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="stickyNoteModal" tabindex="-1" role="dialog" aria-labelledby="stickyNoteModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stickyNoteModalLabel">Create Sticky Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="sticky-content">Content (max 45 characters):</label>
+                    <input type="text" id="sticky-content" class="form-control" maxlength="45" placeholder="Enter note content" required>
+                </div>
+                <div class="form-group">
+                    <label for="sticky-color">Select Color:</label>
+                    <input type="color" id="sticky-color" class="form-control" value="#ffffff">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="create-sticky">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="stickyNoteModal" tabindex="-1" role="dialog" aria-labelledby="stickyNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="stickyNoteModalLabel">Create Sticky Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="sticky-content">Content:</label>
+                    <input type="text" id="sticky-content" class="form-control" maxlength="50" placeholder="Enter note content" required>
+                </div>
+                <div class="form-group">
+                    <label for="sticky-color">Color:</label>
+                    <input type="color" id="sticky-color" class="form-control" value="#f7ff7f">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="create-sticky">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editBoardModal" tabindex="-1" role="dialog" aria-labelledby="editBoardModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBoardModalLabel">Edit Board</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="edit-board-title-input" class="form-control" placeholder="Enter new board title">
+                <select id="edit-board-type-select" class="form-control mt-3">
+                    <option value="Priority">Priority</option>
+                    <option value="Defect">Defect</option>
+                    <option value="Normal">Normal</option>
+                </select>
+				<select id="edit-board-status-select" class="form-control mt-3">
+                    <option value="On Track">On Track</option>
+                    <option value="At Risk">At Risk</option>
+                    <option value="Off Track">Off Track</option>
+                </select>
+                <input type="color" id="edit-color-picker-input" class="form-control mt-3" value="#ffffff" />
+				<textarea id="edit-board-description-input" class="form-control mt-3" rows="4" placeholder="Edit board description"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="edit-board-confirm">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="boardDetailsModal" tabindex="-1" role="dialog" aria-labelledby="boardDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="boardDetailsModalLabel">Board Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Name: <span id="board-details-name"></span></p>
+                <p>Created On: <span id="board-details-creation-date"></span></p>
+                <p>Importance: <span id="board-details-importance"></span></p>
+                <p>
+                    Status:
+                    <span id="board-details-status" style="
+                        display: inline-block;
+                        font-weight: bold;
+                        font-size: 0.9rem;
+                        color: white;
+                        padding: 2px 6px;
+                        border-radius: 3px;">
+                    </span>
+                </p>
+				<p>Due Date: <span id="board-details-due-date"></span></p>
+                <p>Last Edited: <span id="board-details-last-edited"></span></p>
+                <p>Description:</p>
+                <textarea id="board-details-description" class="form-control" rows="4" readonly></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="taskModalLabel">+ Task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="task-title" class="form-control" placeholder="Task Title" required />
+        <textarea id="task-summary" class="form-control mt-3" rows="3" placeholder="Task Summary"></textarea>
+        <select id="task-priority" class="form-control mt-3">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <select id="task-progress" class="form-control mt-3">
+          <option value="To Do">To Do</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
+        <input type="date" id="task-due-date" class="form-control mt-3" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="createTask(boardId)">+ Create</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div class="modal fade" id="editTaskModal" tabindex="-1" role="dialog" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editTaskModalLabel">Edit Task</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="edit-task-title" class="form-control" placeholder="Task Title" required />
+        <textarea id="edit-task-summary" class="form-control mt-3" rows="3" placeholder="Task Summary"></textarea>
+        <select id="edit-task-priority" class="form-control mt-3">
+          <option value="Low">Low</option>
+          <option value="Medium">Medium</option>
+          <option value="High">High</option>
+        </select>
+        <select id="edit-task-progress" class="form-control mt-3">
+          <option value="To Do">To Do</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
+        <input type="date" id="edit-task-due-date" class="form-control mt-3" />
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" onclick="saveTaskChanges()">Save</button>
+        <button type="button" class="btn btn-danger" onclick="removeTask()">Remove Task</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="taskDetailsModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Task Details</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Title:</strong> <span id="task-details-title"></span></p>
+        <p>Summary:</strong> <span id="task-details-summary"></span></p>
+        <p>Priority:</strong> <span id="task-details-priority"></span></p>
+        <p>Progress:</strong> <span id="task-details-progress"></span></p>
+        <p>Created On:</strong> <span id="task-details-created"></span></p>
+        <p>Due Date:</strong> <span id="task-details-due-date"></span></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="openEditTaskModal()">Edit</button>
+		<button type="button" class="btn btn-primary" id="add-checklist-button">+ Checklists</button>
+        <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="addNoteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addNoteModalLabel">Add Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="new-note-title" class="form-control mb-3" maxlength="15" placeholder="Note Title" />
+                <textarea id="new-note-content" class="form-control" rows="4" placeholder="Note Content"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="add-note-button">Add Note</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="menuModal" tabindex="-1" role="dialog" aria-labelledby="menuModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="menuModalLabel">Note Options</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <button class="btn btn-primary btn-block" onclick="openNote()">Open Note</button>
+                <button class="btn btn-primary btn-block" onclick="openAddCoverModal()">Add Cover</button>
+                <button class="btn btn-primary btn-block" onclick="addLabel()">Add Label</button>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="checklistModal" tabindex="-1" role="dialog" aria-labelledby="checklistModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="checklistModalLabel">Add Checklist</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="checklist-name" class="form-control" placeholder="Checklist Name" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="add-checklist-confirm">Add Checklist</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+    <script src="Gradient UI@V1.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>	
+    <script>
+	//EOSᵀᴹ Stands for Equinox Operating System Which Conatains all the Software Resources
+//EOS Created For Equinox
+//EOS also Includes GenX Engine For Smooth UI 
+//Read our Terms&Conditions and Privacy policy For More Info on EOSᵀᴹ
+//Current Version: EOS 2.1
+
+let boards = [];
+let pinnedBoards = [];
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('add-new-board-button').addEventListener('click', function () {
+    $('#boardTypeModal').modal('show');
+    });
+
+    document.getElementById('add-board-confirm').addEventListener('click', function () {
+        const title = document.getElementById('board-title-input').value;
+        const type = document.getElementById('board-type-select').value;
+        const color = document.getElementById('colorPickerInput').value;
+        addBoard(title, type, color);
+        $('#boardTypeModal').modal('hide');
+    });
+
+    document.getElementById('search-input').addEventListener('input', renderBoards);				
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Remove the original + New, Export, and Import buttons
+    const searchBar = document.querySelector(".search-bar");
+    if (searchBar) {
+        searchBar.querySelectorAll("#add-new-board-button, #export-boards-button, #import-boards-button").forEach((btn) => {
+            btn.remove();
+        });
+    }
+
+    // Create Sidebar
+    const sidebar = document.createElement("div");
+    sidebar.id = "sidebar";
+    Object.assign(sidebar.style, {
+        position: "fixed",
+        top: "56px", // Height of the navbar
+        left: "0",
+        height: "calc(100% - 56px)", // Full height minus navbar
+        width: "275px",
+        backgroundColor: "#f4f4f4",
+        padding: "10px",
+        boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
+        zIndex: "1000",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+    });
+
+    // Sidebar Content
+    sidebar.innerHTML = `
+        <button id="new-board-btn" class="btn btn-primary btn-lg" style="width: 100%; margin-bottom: 20px;" data-toggle="modal" data-target="#boardTypeModal">+ New</button>
+        <div style="margin-top: auto;">
+            <hr style="border-top: 1px solid #ccc;">
+            <button id="export-btn" class="btn btn-secondary" style="width: 100%; margin-bottom: 5px;" data-toggle="modal" data-target="#exportModal">Export</button>
+            <button id="import-btn" class="btn btn-secondary" style="width: 100%;" data-toggle="modal" data-target="#importDataModal">Import</button>
+        </div>
+    `;
+
+    // Append Sidebar to Body
+    document.body.appendChild(sidebar);
+
+    // Adjust Layout Dynamically
+    const mainContent = document.getElementById("main-content");
+    const searchBarContainer = document.querySelector(".search-bar");
+
+    if (mainContent) {
+        mainContent.style.transition = "margin-left 0.3s ease";
+        mainContent.style.marginLeft = "250px";
+    }
+
+    if (searchBarContainer) {
+        searchBarContainer.style.transition = "margin-left 0.3s ease";
+        searchBarContainer.style.marginLeft = "250px";
+        searchBarContainer.style.width = "calc(100% - 250px)"; // Responsive width adjustment
+    }
+
+
+    // Event Listeners for Sidebar Buttons
+    document.getElementById("new-board-btn").addEventListener("click", () => {
+        $('#boardTypeModal').modal('show');
+    });
+
+    document.getElementById("export-btn").addEventListener("click", () => {
+        $('#exportModal').modal('show');
+    });
+
+    document.getElementById("import-btn").addEventListener("click", () => {
+        $('#importDataModal').modal('show');
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const style = document.createElement("style");
+    style.innerHTML = `
+        /* Edge Hover Strip */
+        #hover-trigger {
+            position: fixed;
+            bottom: 0;
+            left: 59%;
+            transform: translateX(-50%);
+            width: 380px;
+            height: 12px;
+            background: linear-gradient(to right, #007bff, #ff3636);
+            border-radius: 12px 12px 0 0;
+            z-index: 9998;
+            cursor: pointer;
+            box-shadow: 0 -2px 12px rgba(0,0,0,0.2);
+        }
+
+        /* Toolbar */
+        #bottom-toolbar {
+            position: fixed;
+            bottom: -260px;
+            left: 59%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 1200px;
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;  
+			box-shadow: 3px 6px 18px rgba(0,0,0,0.2);
+            transition: bottom 0.4s ease;
+            z-index: 9999;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+        }
+
+        #hover-trigger:hover + #bottom-toolbar,
+        #bottom-toolbar:hover {
+            bottom: 0;
+        }
+
+        /* Shared section styles */
+        .toolbar-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toolbar-section-title {
+            font-weight: bold;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        #toolbar-notepad {
+            width: 100%;
+            height: 120px;
+            resize: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        #recent-activity-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+            font-size: 0.85rem;
+            color: #444;
+            max-height: 130px;
+            overflow-y: auto;
+			border: 1px solid #ccc;
+			border-radius: 8px;
+			height: 119px;
+            width: 100%;
+        }
+
+        #recent-activity-list li {
+            margin-bottom: 4px;
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Add hover strip
+    const hoverStrip = document.createElement("div");
+    hoverStrip.id = "hover-trigger";
+    document.body.appendChild(hoverStrip);
+
+    // Add the full toolbar
+    const toolbar = document.createElement("div");
+    toolbar.id = "bottom-toolbar";
+    toolbar.innerHTML = `
+        <div class="toolbar-section">
+            <div class="toolbar-section-title">📝 Mini Notepad</div>
+            <textarea id="toolbar-notepad" placeholder="Any Notes...?"></textarea>
+        </div>
+        <div class="toolbar-section">
+            <div class="toolbar-section-title">🕓 Recent Activity</div>
+            <ul id="recent-activity-list">
+                <li>✅ Equinox Loaded</li>
+            </ul>
+        </div>
+    `;
+    document.body.appendChild(toolbar);
+
+    // Logging system
+    window.logActivity = function (message) {
+        const list = document.getElementById("recent-activity-list");
+        const newItem = document.createElement("li");
+        newItem.textContent = message;
+        list.insertBefore(newItem, list.firstChild);
+    };
+
+    // EXAMPLE USAGE: logActivity("Created board Science");
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    // Inject CSS for Search Bar & Filters Styling
+    const style = document.createElement("style");
+    style.innerHTML = `
+        /* 🔵 Search Container */
+        .search-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: white;
+            padding: 9px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            margin: 65px 15px 15px 250px; /* Push down from navbar */
+            width: calc(100% - 0px);
+            transition: margin-left 0.3s ease, width 0.3s ease;
+			margin-left: 145px;
+        }
+
+        /* 🔍 Search Bar Styling */
+        .search-container input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: border 0.3s, box-shadow 0.3s;
+            margin-right: 10px;
+            font-size: 1rem;
+        }
+
+        .search-container input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+        /* 🎯 Dropdowns (Filters) */
+        .search-container select {
+            padding: 3px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: border 0.3s, box-shadow 0.3s;
+            font-size: 1rem;
+			height: 45px;
+        }
+
+        .search-container select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+            outline: none;
+        }
+
+        /* 🔄 Layout for Filters */
+        .filter-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        /* 📱 Responsive Adjustments */
+        @media (max-width: 768px) {
+            #sidebar {
+                width: 200px;
+            }
+
+            .search-container {
+                flex-direction: column;
+                align-items: stretch;
+                margin: 80px 10px 10px 200px; /* Adjust for smaller sidebar */
+                width: calc(100% - 200px);
+            }
+
+            .search-container input {
+                width: 100%;
+                max-width: none;
+                margin-bottom: 10px;
+            }
+
+            .filter-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .search-container select {
+                width: 100%;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Wrap Search Bar & Filters inside a Container
+    const searchBar = document.querySelector(".search-bar");
+    const searchContainer = document.createElement("div");
+    searchContainer.classList.add("search-container");
+
+    // Create filter group div
+    const filterGroup = document.createElement("div");
+    filterGroup.classList.add("filter-group");
+
+    // Append filters into the filter group
+    filterGroup.appendChild(document.getElementById("filter-importance"));
+    filterGroup.appendChild(document.getElementById("filter-status"));
+
+    // Append search input & filters into the container
+    searchContainer.appendChild(document.getElementById("search-input"));
+    searchContainer.appendChild(filterGroup);
+
+    // Replace existing search bar with new container
+    searchBar.replaceWith(searchContainer);
+
+    // Event Listeners for Filtering
+    document.getElementById("search-input").addEventListener("input", renderBoards);
+    document.getElementById("filter-importance").addEventListener("change", renderBoards);
+    document.getElementById("filter-status").addEventListener("change", renderBoards);
+});
+
+// Add a new board
+function addBoard(title, type, color) {
+    const status = document.getElementById('board-status-select').value;
+    const description = document.getElementById('board-description-input').value;
+    const dueDateInput = document.getElementById('board-due-date-input').value;
+    const creationDate = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+
+    // Validate due date
+    if (new Date(dueDateInput) <= new Date(creationDate)) {
+        alert("Due Date must be after the creation date!");
+        return;
+    }
+
+    const newBoard = {
+        id: boards.length ? Math.max(...boards.map(b => b.id)) + 1 : 1,
+        title,
+        type,
+        color,
+        status,
+        description,
+        dueDate: dueDateInput,
+        creationDate: creationDate,
+        lastEdited: creationDate,
+        subBoards: [],
+        notes: [],
+        history: [],
+        pinned: false,
+    };
+
+    boards.push(newBoard);
+    logBoardChange(newBoard.id, `Created board: ${title}`);
+
+    // Add the board to the sidebar
+    addBoardToSidebar(newBoard);
+
+    // Render all boards initially
+    renderBoards();
+
+    // Hide the modal after adding
+    $('#boardTypeModal').modal('hide');
+}
+
+// Add a board name to the sidebar
+function addBoardToSidebar(board) {
+    const boardList = document.getElementById('board-list');
+    const boardElement = document.createElement('button');
+    boardElement.className = 'list-group-item list-group-item-action';
+    boardElement.textContent = board.title;
+    boardElement.dataset.boardId = board.id;
+
+    // Add click event listener to highlight and show the selected board
+    boardElement.addEventListener('click', () => displayBoard(board.id));
+
+    // Append the new board to the sidebar
+    boardList.appendChild(boardElement);
+}
+
+// Display a specific board in the main content area
+function displayBoard(boardId) {
+    const mainContent = document.getElementById('boards-container');
+    mainContent.innerHTML = ''; // Clear existing content
+
+    const board = boards.find(b => b.id === boardId);
+    if (!board) {
+        mainContent.innerHTML = '<div class="alert alert-warning">Board not found!</div>';
+        return;
+    }
+
+    // Highlight the selected board in the sidebar
+    document.querySelectorAll('#board-list .list-group-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    const activeBoardElement = document.querySelector(`[data-board-id="${boardId}"]`);
+    if (activeBoardElement) activeBoardElement.classList.add('active');
+
+    // Create the board content
+    const boardElement = document.createElement('div');
+    boardElement.className = 'board';
+    boardElement.style.backgroundColor = board.color;
+
+    boardElement.innerHTML = `
+        <div class="board-header">
+            <h2 class="board-title">${board.title}</h2>
+            <span class="status-badge" style="background-color: ${statusColors[board.status]};">
+                ${board.status}
+            </span>
+        </div>
+        <div class="board-body">
+            <p><strong>Description:</strong> ${board.description || 'No description available.'}</p>
+            <p><strong>Due Date:</strong> ${board.dueDate || 'Not set'}</p>
+        </div>
+    `;
+
+    mainContent.appendChild(boardElement);
+}
+
+// Log changes to board history
+function logBoardChange(boardId, description) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        board.history.push({
+            description,
+            time: new Date().toLocaleString(),
+        });
+    } else {
+        console.error('Board not found for logging.');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('search-input').addEventListener('input', renderBoards);
+    document.getElementById('filter-importance').addEventListener('change', renderBoards);
+    document.getElementById('filter-status').addEventListener('change', renderBoards);
+});
+
+// Render boards in the UI
+function renderBoards() {
+    const container = document.getElementById('boards-container');
+    container.innerHTML = '';
+
+    // Inline CSS for board styling
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+     .board {
+            background: rgba(255, 255, 255, 0.8); /* Transparent white background */
+            
+            border-radius: 18px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+			border: 5px #333;
+            
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .board:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 18px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+        }
+
+        .board-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+         .board-title {
+            font-size: 1.7em;
+            font-weight: bold;
+            color: #2a3f54;
+        }
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 0.9em;
+            color: white;
+            text-transform: capitalize;
+			font-weight: bold;
+        }
+
+        .board-body {
+            margin-bottom: 15px;
+        }
+
+        .tasks, .notes, .sub-boards-container, .tables-container {
+            margin-top: 10px;
+        }
+
+        .sticky-notes-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .sticky-note {
+            width: 160px;
+            height: 160px;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            cursor: grab;
+        }
+
+        .sticky-content {
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .remove-sticky {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: red;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .action-buttons .btn {
+            padding: 8px 16px;
+            font-size: 0.9em;
+            border-radius: 10px;
+            transition: background-color 0.3s;
+        }
+
+        .action-buttons .btn:hover {
+            filter: brightness(1.1);
+		}
+			
+		hr.board-divider {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            width: 1210px; 
+            margin: 0; 	
+			margin-left: -21px;
+			
+        }
+    `;
+    document.head.appendChild(styleElement);
+
+     const searchTerm = document.getElementById('search-input').value.toLowerCase();
+    const selectedImportance = document.getElementById('filter-importance').value;
+    const selectedStatus = document.getElementById('filter-status').value;
+
+    let filteredBoards = boards.filter(board => {
+        const matchesSearch = board.title.toLowerCase().includes(searchTerm);
+        const matchesImportance = selectedImportance === "" || board.type === selectedImportance;
+        const matchesStatus = selectedStatus === "" || board.status === selectedStatus;
+        return matchesSearch && matchesImportance && matchesStatus;
+    });
+
+    if (filteredBoards.length === 0) {
+        container.innerHTML = '<div class="alert alert-warning">No Boards Found</div>';
+        return;
+    }
+
+// Separate pinned and unpinned boards
+    const pinnedBoards = filteredBoards.filter(board => board.pinned);
+    const unpinnedBoards = filteredBoards.filter(board => !board.pinned);
+    const sortedBoards = [...pinnedBoards, ...unpinnedBoards];
+
+    // Define status colors
+    const statusColors = {
+        'On Track': 'green',
+        'At Risk': 'orange',
+        'Off Track': 'red',
+    };
+
+    sortedBoards.forEach(board => {
+        const boardElement = document.createElement('div');
+        boardElement.className = `board ${board.pinned ? 'pinned' : ''}`;
+        boardElement.style.backgroundColor = board.color;
+
+        // Board content
+        boardElement.innerHTML = `
+            <div class="board-header">
+                <h2 class="board-title">${board.title}</h2>
+                <span class="status-badge" style="background-color: ${statusColors[board.status]};">
+                    ${board.status}
+                </span>
+            </div>
+			<hr class="board-divider"> <!-- Line below the board header -->
+            <div class="board-body">
+                <div class="tasks">${renderTasks(board.id)}</div>
+                <div class="notes">${renderNotes(board)}</div>
+                <div class="sub-boards-container">${renderSubBoards(board)}</div>
+                <div class="tables-container">${renderTables(board)}</div>
+                <div class="sticky-notes-container">
+                    ${board.stickyNotes
+                        ? board.stickyNotes.map((note, index) => `
+                            <div class="sticky-note" style="background-color: ${note.color}" draggable="true"
+                                ondragstart="dragStart(event)" ondragend="dragEnd(event)"
+                                data-board-id="${board.id}" data-index="${index}">
+                                <span class="sticky-content">${note.content}</span>
+                                <button class="remove-sticky" onclick="removeSticky(${board.id}, ${index})">&times;</button>
+                            </div>
+                        `).join('')
+                        : ''}
+                </div>
+            </div>
+			<hr style="border: 1px solid #cecece; margin-bottom: 10px;"> 
+            <div class="action-buttons">
+			    <button class="btn btn-primary" onclick="showTaskModal(${board.id})">+ Task</button>
+                <button class="btn btn-primary" onclick="openAddNoteModal(${board.id})">+ Note</button>
+                <button class="btn btn-primary" onclick="showSubBoardModal(${board.id})">+ Sub-Board</button>
+                <button class="btn btn-primary" onclick="showAddTableModal(${board.id})">+ Table</button>
+                <button class="btn btn-secondary" onclick="showStickyNoteModal(${board.id})">+ Sticky</button>
+                <button class="btn btn-secondary" onclick="showBoardDetailsModal(${board.id})">View Details</button>
+                <button class="btn btn-secondary pin-button" onclick="togglePinBoard(${board.id})">
+                    ${board.pinned ? 'Unpin' : 'Pin'}
+                </button>
+                <button class="btn btn-danger" onclick="confirmRemoveBoard(${board.id})">- Remove</button>
+            </div>
+        `;
+ // Ensure the board body has a scrollable effect
+        const boardBody = boardElement.querySelector('.board-body');
+        boardBody.style.maxHeight = '600px'; // Limit height before scrollbar appears
+        boardBody.style.overflowY = 'auto';
+
+        container.appendChild(boardElement);
+		
+    });
+}
+
+
+// Global Tasks List
+let tasks = [];
+
+// Show the task modal
+function showTaskModal(boardId) {
+    $('#taskModal').modal('show');
+    document.querySelector('#taskModal .btn-primary').onclick = () => createTask(boardId);
+}
+
+// Create a new task
+function createTask(boardId) {
+    const title = document.getElementById('task-title').value.trim();
+    const summary = document.getElementById('task-summary').value.trim();
+    const priority = document.getElementById('task-priority').value;
+    const progress = document.getElementById('task-progress').value;
+    const dueDate = document.getElementById('task-due-date').value;
+    const createdOn = new Date().toISOString().split('T')[0];
+
+    if (!title) {
+        alert('Task title is required.');
+        return;
+    }
+
+    const newTask = {
+        id: tasks.length ? Math.max(...tasks.map(t => t.id)) + 1 : 1,
+        boardId,
+        title,
+        summary,
+        priority,
+        progress,
+        dueDate,
+        createdOn,
+    };
+
+    tasks.push(newTask);
+    logBoardChange(boardId, `Task "${title}" created.`);
+    renderBoards();
+    $('#taskModal').modal('hide');
+}
+
+// Show task details modal
+function showTaskDetailsModal(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const modal = document.createElement('div');
+    modal.className = 'modal fade';
+    modal.id = 'taskDetailsModal';
+    modal.tabIndex = -1;
+    modal.innerHTML = `
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">${task.title}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Summary:</strong> ${task.summary}</p>
+                    <p><strong>Priority:</strong> ${task.priority}</p>
+                    <p><strong>Progress:</strong> ${task.progress}</p>
+                    <p><strong>Created On:</strong> ${task.createdOn}</p>
+                    <p><strong>Due Date:</strong> ${task.dueDate || 'No due date set'}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="showEditTaskModal(${task.id})">Edit</button>
+                </div>
+            </div>
+        </div>`;
+    document.body.appendChild(modal);
+    $('#taskDetailsModal').modal('show');
+}
+
+function showEditTaskModal(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    document.getElementById('edit-task-title').value = task.title;
+    document.getElementById('edit-task-summary').value = task.summary;
+    document.getElementById('edit-task-priority').value = task.priority;
+    document.getElementById('edit-task-progress').value = task.progress;
+    document.getElementById('edit-task-due-date').value = task.dueDate;
+
+    // Save the task ID for updates/removal
+    document.getElementById('editTaskModal').dataset.taskId = taskId;
+
+    // Show the Edit Task Modal
+    $('#editTaskModal').modal('show');
+}
+
+
+// Show edit task modal
+function showEditTaskModal(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    const modalContent = `
+        <div class="modal-header">
+            <h5 class="modal-title">Edit Task</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <input type="text" id="edit-task-title" class="form-control" value="${task.title}" required />
+            <textarea id="edit-task-summary" class="form-control mt-3" rows="3">${task.summary}</textarea>
+            <select id="edit-task-priority" class="form-control mt-3">
+                <option value="High" ${task.priority === 'High' ? 'selected' : ''}>High</option>
+                <option value="Medium" ${task.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                <option value="Low" ${task.priority === 'Low' ? 'selected' : ''}>Low</option>
+            </select>
+            <select id="edit-task-progress" class="form-control mt-3">
+                <option value="To Do" ${task.progress === 'To Do' ? 'selected' : ''}>To Do</option>
+                <option value="In Progress" ${task.progress === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                <option value="Done" ${task.progress === 'Done' ? 'selected' : ''}>Done</option>
+            </select>
+            <input type="date" id="edit-task-due-date" class="form-control mt-3" value="${task.dueDate}" />
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" onclick="saveTaskChanges(${task.id})">Save</button>
+        </div>`;
+    document.querySelector('#taskDetailsModal .modal-content').innerHTML = modalContent;
+}
+
+function openTaskDetailsModal(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    document.getElementById('task-details-title').textContent = task.title;
+    document.getElementById('task-details-summary').textContent = task.summary;
+    document.getElementById('task-details-priority').textContent = task.priority;
+    document.getElementById('task-details-progress').textContent = task.progress;
+    document.getElementById('task-details-created').textContent = task.createdOn;
+    document.getElementById('task-details-due-date').textContent = task.dueDate || 'No due date set';
+
+    document.getElementById('taskDetailsModal').dataset.taskId = task.id;
+
+    $('#taskDetailsModal').modal('show');
+}
+
+function openEditTaskModal() {
+    const taskId = parseInt(document.getElementById('taskDetailsModal').dataset.taskId, 10);
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    document.getElementById('edit-task-title').value = task.title;
+    document.getElementById('edit-task-summary').value = task.summary;
+    document.getElementById('edit-task-priority').value = task.priority;
+    document.getElementById('edit-task-progress').value = task.progress;
+    document.getElementById('edit-task-due-date').value = task.dueDate;
+
+    document.getElementById('editTaskModal').dataset.taskId = task.id;
+
+    $('#editTaskModal').modal('show');
+}
+
+function saveTaskChanges() {
+    const taskId = parseInt(document.getElementById('editTaskModal').dataset.taskId, 10);
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    task.title = document.getElementById('edit-task-title').value.trim();
+    task.summary = document.getElementById('edit-task-summary').value.trim();
+    task.priority = document.getElementById('edit-task-priority').value;
+    task.progress = document.getElementById('edit-task-progress').value;
+    task.dueDate = document.getElementById('edit-task-due-date').value;
+
+    renderBoards();
+    openTaskDetailsModal(taskId);
+    $('#editTaskModal').modal('hide');
+}
+
+function removeTask() {
+    const taskId = parseInt(document.getElementById('editTaskModal').dataset.taskId, 10);
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
+    if (taskIndex === -1) return;
+
+    tasks.splice(taskIndex, 1);
+    renderBoards();
+    $('#editTaskModal').modal('hide');
+}
+
+// Log task changes
+function logTaskChange(taskId, description) {
+    const timestamp = new Date().toLocaleString();
+    const task = tasks.find(t => t.id === taskId);
+    if (task) {
+        // Find the associated board
+        const board = boards.find(b => b.id === task.boardId);
+        if (board) {
+            board.history.push({ description, time: timestamp });
+        }
+    }
+}
+
+// Render tasks in boards
+function renderTasks(boardId) {
+    return tasks
+        .filter(task => task.boardId === boardId)
+        .map((task, index) => {
+            const taskChecklistsHTML = taskChecklists[task.id]
+                ? taskChecklists[task.id]
+                      .map(
+                          checklist => `
+                          <div class="checklist-container" style="margin-top: 10px; background-color: #f8f9fa; padding: 8px; border-radius: 8px;">
+                              <strong style="color: #007bff; cursor: pointer;" onclick="openAddItemsModal(${task.id}, '${checklist.name}')">
+                                  ${checklist.name}
+                              </strong>
+                          </div>`
+                      )
+                      .join('')
+                : '';
+
+            return `
+            <div 
+                class="task" 
+                onclick="openTaskDetailsModal(${task.id})"
+                style="
+                    background-color: #bfffff; 
+                    border-radius: 15px; 
+                    padding: 10px; 
+                    margin: 5px; 
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+                    cursor: pointer; 
+                    transition: background-color 0.3s, transform 0.2s, box-shadow 0.2s; 
+                    width: 370px; /* Smaller task width */
+                    display: inline-block; /* Stack side by side */
+                    position: relative;
+                    z-index: ${tasks.length - index}; /* Maintain proper stacking order */"
+                onmouseover="this.style.backgroundColor='#d6f5f2'; this.style.transform='translateY(-2px)'; this.style.boxShadow='0 4px 8px rgba(0, 0, 0, 0.15)';"
+                onmouseout="this.style.backgroundColor='#bfffff'; this.style.transform='translateY(0)'; this.style.boxShadow='0 2px 4px rgba(0, 0, 0, 0.1)';">
+                
+                <strong style="color: #007b83; font-size: 1.1rem;">${task.title}</strong> 
+                <div style="margin-top: 5px; font-size: 0.8rem;"> 
+                    <span 
+                        style="background-color: ${task.priority === 'High' ? '#ff9999' : task.priority === 'Medium' ? '#ffcc66' : '#99cc99'};
+                               color: #fff; 
+                               padding: 4px 8px; 
+                               border-radius: 4px;">
+                        ${task.priority}
+                    </span>
+                    <span style="margin-left: 10px;">${task.progress}</span>
+                </div>
+
+                ${taskChecklistsHTML}
+
+            </div>`;
+        })
+        .join('');
+}
+
+let taskChecklists = {};
+
+document.getElementById('add-checklist-button').addEventListener('click', function () {
+    $('#checklistModal').modal('show');
+    document.getElementById('checklist-name').value = '';
+});
+
+document.getElementById('add-checklist-confirm').addEventListener('click', function () {
+    const checklistName = document.getElementById('checklist-name').value.trim();
+    if (checklistName) {
+        const taskDetailsModal = document.getElementById('task-details-modal-body');
+        const taskId = taskDetailsModal.getAttribute('data-task-id');
+        if (!taskChecklists[taskId]) {
+            taskChecklists[taskId] = [];
+        }
+        taskChecklists[taskId].push(checklistName);
+        renderTasks();
+        $('#checklistModal').modal('hide');
+    }
+});
+
+ function showBoardDetailsModal(boardId) {
+      const board = boards.find(b => b.id === boardId);
+      if (!board) return;
+  
+      document.getElementById("board-details-name").textContent = board.title;
+      document.getElementById("board-details-creation-date").textContent = board.creationDate;
+      document.getElementById("board-details-importance").textContent = board.type;
+      document.getElementById("board-details-status").textContent = board.status;
+      document.getElementById("board-details-due-date").textContent = board.dueDate || "Not set";
+      document.getElementById("board-details-last-edited").textContent = board.lastEdited;
+      document.getElementById("board-details-description").value = board.description || "";
+		
+  
+      // Ensure only one edit and history button exists
+      const modalFooter = document.querySelector("#boardDetailsModal .modal-footer");
+      modalFooter.innerHTML = ""; // Clear existing buttons before adding new ones
+      
+      const editButton = `<button class="btn btn-primary" onclick="showEditBoardModal(${boardId})">Edit</button>`;
+      const historyButton = `<button class="btn btn-secondary" onclick="viewBoardHistory(${boardId})">View History</button>`;
+      modalFooter.innerHTML = editButton + historyButton + modalFooter.innerHTML;
+  
+      $('#boardDetailsModal').modal('show');
+  }
+
+function showEditBoardModal(boardId) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        document.getElementById('edit-board-title-input').value = board.title;
+        document.getElementById('edit-board-type-select').value = board.type;
+        document.getElementById('edit-color-picker-input').value = board.color;
+        document.getElementById('edit-board-status-select').value = board.status;
+        document.getElementById('edit-board-description-input').value = board.description || ''; // Populate description
+        document.getElementById('edit-board-confirm').onclick = function () {
+            saveBoardChanges(boardId);
+        };
+        $('#editBoardModal').modal('show');
+    }
+}
+
+document.getElementById('edit-board-confirm').addEventListener('click', () => {
+    const boardId = getActiveBoardId(); // Replace with your logic for active board ID
+    const board = boards.find(b => b.id === boardId);
+
+    if (board) {
+        const newTitle = document.getElementById('edit-board-title-input').value.trim();
+        const newType = document.getElementById('edit-board-type-select').value;
+        const newColor = document.getElementById('edit-color-picker-input').value;
+        const newDescription = document.getElementById('edit-board-description-input').value.trim();
+
+        // Update board details
+        board.title = newTitle;
+        board.type = newType;
+        board.color = newColor;
+        board.description = newDescription;
+        board.lastEdited = new Date().toLocaleString();
+
+        // Log history
+        logBoardChange(boardId, `Board "${newTitle}" edited.`);
+        renderBoards(); // Refresh UI
+        $('#editBoardModal').modal('hide');
+    } else {
+        alert('Board not found.');
+    }
+});
+
+function saveBoardChanges(boardId) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        board.title = document.getElementById('edit-board-title-input').value;
+        board.type = document.getElementById('edit-board-type-select').value;
+        board.color = document.getElementById('edit-color-picker-input').value;
+        board.status = document.getElementById('edit-board-status-select').value;
+        board.description = document.getElementById('edit-board-description-input').value; // Save description
+        board.lastEdited = new Date().toLocaleString(); // Update last edited date
+        renderBoards();
+        $('#editBoardModal').modal('hide');
+    }
+}
+
+function removeSticky(boardId, index) {
+    const board = boards.find(b => b.id === boardId);
+    if (board && board.stickyNotes) {
+        board.stickyNotes.splice(index, 1);
+        renderBoards();
+    }
+}
+
+let currentSticky = null;
+
+function dragStart(event) {
+    currentSticky = event.target;
+    const rect = currentSticky.getBoundingClientRect();
+    currentSticky.dataset.offsetX = event.clientX - rect.left;
+    currentSticky.dataset.offsetY = event.clientY - rect.top;
+
+    // Add styles to ensure proper drag behavior
+    currentSticky.style.position = 'absolute';
+    currentSticky.style.zIndex = '1000';
+    currentSticky.style.cursor = 'grabbing';
+}
+
+function drag(event) {
+    if (!currentSticky) return;
+
+    const offsetX = parseFloat(currentSticky.dataset.offsetX);
+    const offsetY = parseFloat(currentSticky.dataset.offsetY);
+
+    // Update the position of the sticky note
+    currentSticky.style.left = `${event.clientX - offsetX}px`;
+    currentSticky.style.top = `${event.clientY - offsetY}px`;
+}
+
+function dragEnd(event) {
+    if (currentSticky) {
+        currentSticky.style.cursor = 'grab';
+        currentSticky = null;
+    }
+}
+
+document.addEventListener('dragover', function (event) {
+    event.preventDefault(); // Necessary to allow dropping
+    if (currentSticky) drag(event); // Follow the cursor during drag
+});
+
+const style = document.createElement('style');
+style.textContent = `
+    .sticky-notes-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .sticky-note {
+        width: 200px;
+        height: 200px;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        cursor: grab;
+    }
+
+    .sticky-content {
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .remove-sticky {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: red;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    .remove-sticky:hover {
+        background-color: darkred;
+    }
+`;
+document.head.appendChild(style);
+
+function showStickyNoteModal(boardId) {
+    const createStickyButton = document.getElementById('create-sticky');
+    createStickyButton.onclick = function () {
+        createStickyNote(boardId);
+    };
+    $('#stickyNoteModal').modal('show');
+}
+
+function createStickyNote(boardId) {
+    const content = document.getElementById('sticky-content').value.trim();
+    const color = document.getElementById('sticky-color').value;
+
+    if (!content) {
+        alert('Please enter sticky note content.');
+        return;
+    }
+
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        if (!board.stickyNotes) board.stickyNotes = [];
+        board.stickyNotes.push({ content, color });
+        renderBoards();
+        $('#stickyNoteModal').modal('hide');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('confirmExportButton').addEventListener('click', function () {
+        console.log("Export button clicked");
+        const fileName = document.getElementById('exportFileName').value.trim() || 'boards';
+        const format = document.getElementById('exportFormat').value;
+
+        console.log("File Name:", fileName);
+        console.log("Format:", format);
+
+        if (!boards || boards.length === 0) {
+            alert("No data available to export.");
+            return;
+        }
+
+        if (format === 'json') {
+            exportAsJSON(fileName);
+        } else if (format === 'xlsx') {
+            exportAsXLSX(fileName);
+        }
+
+        $('#exportModal').modal('hide');
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Attach event listener to the Select File button
+    const selectFileButton = document.getElementById('select-file-button');
+    if (selectFileButton) {
+        selectFileButton.addEventListener('click', function () {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+
+            // Handle file selection
+            input.onchange = function (event) {
+                const file = event.target.files[0];
+                if (!file) {
+                    alert("No file selected.");
+                    return;
+                }
+
+                // Read the JSON file
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    try {
+                        const importedData = JSON.parse(event.target.result);
+
+                        // Validate the structure of the imported data
+                        if (!Array.isArray(importedData)) {
+                            throw new Error("Invalid JSON format: Expected an array of boards.");
+                        }
+
+                        // Assign imported data to `boards` and re-render
+                        boards = importedData.map(board => ({
+                            ...board,
+                            spreadsheets: board.spreadsheets || [], // Ensure spreadsheets key exists
+                        }));
+
+                        alert("Import successful!");
+                        renderBoards(); // Re-render the UI
+                        $('#importDataModal').modal('hide'); // Close the modal
+                    } catch (error) {
+                        alert(`Error importing JSON: ${error.message}`);
+                        console.error(error);
+                    }
+                };
+
+                reader.readAsText(file); // Start reading the file
+            };
+
+            // Trigger the file input dialog
+            input.click();
+        });
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+    const exportButton = document.getElementById('export-boards-button');
+    const importButton = document.getElementById('import-boards-button');
+
+    if (exportButton) {
+        exportButton.addEventListener('click', function () {
+            $('#exportModal').modal('show');
+        });
+    }
+
+    if (importButton) {
+        importButton.addEventListener('click', function () {
+            $('#importDataModal').modal('show');
+        });
+    }
+});
+
+const observer = new MutationObserver(function (mutationsList) {
+    mutationsList.forEach(mutation => {
+        if (mutation.type === 'childList') {
+            const exportButton = document.getElementById('export-boards-button');
+            const importButton = document.getElementById('import-boards-button');
+
+            if (exportButton && !exportButton.dataset.listenerAdded) {
+                exportButton.dataset.listenerAdded = true;
+                exportButton.addEventListener('click', function () {
+                    $('#exportModal').modal('show');
+                });
+            }
+
+            if (importButton && !importButton.dataset.listenerAdded) {
+                importButton.dataset.listenerAdded = true;
+                importButton.addEventListener('click', function () {
+                    $('#importDataModal').modal('show');
+                });
+            }
+        }
+    });
+});
+
+observer.observe(document.body, { childList: true, subtree: true });
+
+ document.addEventListener('DOMContentLoaded', function () {
+        const addStickyButton = document.getElementById('add-sticky-button');
+
+        // Open Modal on Button Click
+        addStickyButton.addEventListener('click', function () {
+            $('#stickyNoteModal').modal('show'); // Use jQuery to open the modal
+        });
+
+        // Handle Sticky Note Creation
+        const createStickyButton = document.getElementById('create-sticky');
+        createStickyButton.addEventListener('click', function () {
+            const content = document.getElementById('sticky-content').value.trim();
+            const color = document.getElementById('sticky-color').value;
+
+            if (!content) {
+                alert('Please enter sticky note content.');
+                return;
+            }
+
+            // Add your sticky note creation logic here
+            alert(`Sticky Note Created: ${content} with color ${color}`);
+
+            $('#stickyNoteModal').modal('hide'); // Close the modal
+        });
+    });
+	
+    document.addEventListener('DOMContentLoaded', function () {
+        const addStickyButton = document.getElementById('add-sticky-button');
+        const stickyContentInput = document.getElementById('sticky-content');
+        const stickyColorInput = document.getElementById('sticky-color');
+        const createStickyButton = document.getElementById('create-sticky');
+        const modalElement = $('#stickyNoteModal'); // Bootstrap Modal Element
+
+        let stickyNotes = [];
+
+        // Open Modal
+        addStickyButton.addEventListener('click', function () {
+            modalElement.modal('show');
+        });
+
+        // Create Sticky Note
+        createStickyButton.addEventListener('click', function () {
+            const content = stickyContentInput.value.trim();
+            const color = stickyColorInput.value;
+
+            if (content === '') {
+                alert('Sticky note content cannot be empty!');
+                return;
+            }
+
+            const stickyNote = {
+                id: stickyNotes.length ? Math.max(...stickyNotes.map(s => s.id)) + 1 : 1,
+                content,
+                color,
+            };
+
+            stickyNotes.push(stickyNote);
+            renderStickyNotes();
+            modalElement.modal('hide');
+        });
+
+        // Render Sticky Notes
+        function renderStickyNotes() {
+            const boardContainer = document.getElementById('boards-container');
+            let stickyContainer = document.querySelector('.sticky-container');
+
+            // Create a new container if none exists
+            if (!stickyContainer) {
+                stickyContainer = document.createElement('div');
+                stickyContainer.className = 'sticky-container';
+                boardContainer.appendChild(stickyContainer);
+            }
+
+            // Clear previous notes and render
+            stickyContainer.innerHTML = stickyNotes.map(note => `
+                <div class="sticky-note" 
+                     style="background-color: ${note.color}; 
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+                            border-radius: 10px; 
+                            padding: 15px; 
+                            font-family: 'Arial', sans-serif; 
+                            cursor: grab;">
+                    <div style="font-weight: bold; text-align: center; color: #333;">${note.content}</div>
+                    <button class="remove-sticky" 
+                            style="position: absolute; 
+                                   top: 5px; 
+                                   right: 5px; 
+                                   background: red; 
+                                   color: white; 
+                                   border: none; 
+                                   border-radius: 50%; 
+                                   width: 20px; 
+                                   height: 20px; 
+                                   cursor: pointer;">&times;</button>
+                </div>
+            `).join('');
+
+            // Attach event listeners to remove buttons
+            stickyContainer.querySelectorAll('.remove-sticky').forEach((button, index) => {
+                button.addEventListener('click', function () {
+                    removeSticky(index);
+                });
+            });
+
+            // Make notes draggable
+            makeDraggable();
+        }
+
+        // Remove Sticky Note
+        function removeSticky(index) {
+            stickyNotes.splice(index, 1);
+            renderStickyNotes();
+        }
+
+        // Make Sticky Notes Draggable
+        function makeDraggable() {
+            const stickyNotesElements = document.querySelectorAll('.sticky-note');
+            stickyNotesElements.forEach(note => {
+                note.addEventListener('mousedown', function (event) {
+                    let shiftX = event.clientX - note.getBoundingClientRect().left;
+                    let shiftY = event.clientY - note.getBoundingClientRect().top;
+
+                    function moveAt(pageX, pageY) {
+                        note.style.position = 'absolute';
+                        note.style.zIndex = 1000;
+                        note.style.left = pageX - shiftX + 'px';
+                        note.style.top = pageY - shiftY + 'px';
+                    }
+
+                    function onMouseMove(event) {
+                        moveAt(event.pageX, event.pageY);
+                    }
+
+                    document.addEventListener('mousemove', onMouseMove);
+
+                    note.onmouseup = function () {
+                        document.removeEventListener('mousemove', onMouseMove);
+                        note.onmouseup = null;
+                    };
+                });
+
+                note.ondragstart = function () {
+                    return false;
+                };
+            });
+        }
+    });
+
+// Function to render tables within a board
+function renderTables(board) {
+    return (board.tables || []).map((table, index) => `
+        <div class="board-table">
+            ${table.html}
+            <button class="btn btn-danger remove-table-button" onclick="removeTable(${board.id}, ${index})">Remove Table</button>
+        </div>
+    `).join('');
+}
+
+boardElement.innerHTML = `
+    <div class="tables-container">
+        ${renderTables(board)}
+    </div>
+`;
+
+// Toggle pinning of a board
+function togglePinBoard(boardId) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        const pinnedCount = boards.filter(b => b.pinned).length;
+
+        // Check if the board is being pinned
+        if (!board.pinned && pinnedCount >= 3) {
+            alert("Max Pin Limit of 3 Reached.");
+            return; // Exit the function if the limit is reached
+        }
+
+        board.pinned = !board.pinned; // Toggle the pinned state
+        renderBoards(); // Re-render the boards to reflect changes
+    }
+}
+
+function renderNotes(board) {
+    return `
+        <div class="notes-container" style="
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 10px;">
+            ${board.notes
+                .map(
+                    (note, index) => `
+                    <div class="note" 
+                        style="
+                            flex: 1 1 calc(30% - 20px); 
+                            display: flex; 
+                            flex-direction: column; 
+                            gap: 10px; 
+                            padding: 16px; 
+                            border-radius: 16px; 
+                            background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+                            transition: transform 0.2s ease, box-shadow 0.2s ease; 
+                            min-width: 360px;
+                            max-width: 360px;
+                            height: 220px;"
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 12px 24px rgba(0, 0, 0, 0.2)';"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.1)';"
+                    >
+                        <!-- Note Header -->
+                        <div style="
+                            display: flex; 
+                            justify-content: space-between; 
+                            align-items: center;
+                            position: relative;">
+                            <!-- Note Title -->
+                            <div style="
+                                font-weight: bold; 
+                                font-size: 18px; 
+                                color: #37474f;
+                                border-bottom: 2px solid #b0bec5; 
+                                padding-bottom: 6px;
+                                flex-grow: 1;">
+                                ${note.title || "Untitled Note"}
+                            </div>
+                            <!-- Menu Button -->
+                            <button style="
+                                background-color: #cecece; 
+                                border: none;
+								padding: 1px 4px; 
+                                font-size: 20px;
+								border-radius: 5px;
+                                cursor: pointer;
+                                color: #37474f;
+                                position: absolute;
+                                right: 40px;
+                                top: -3px;
+                                transition: background-color 0.3s;"
+                                onmouseover="this.style.background-color='#007bff';"
+                                onmouseout="this.style.background-color='#37474f';"
+                                onclick="openMenu(${board.id}, ${index})">
+                                ⋯
+                            </button>
+                            <!-- Remove Button -->
+                            <button class="remove-note" style="
+                                background-color: #ff8a80; 
+                                border: none; 
+                                color: white; 
+                                border-radius: 5px; 
+                                padding: 4px 8px; 
+                                font-size: 14px;
+                                cursor: pointer;
+                                transition: background-color 0.3s ease;"
+                                onmouseover="this.style.backgroundColor='#ff5252';"
+                                onmouseout="this.style.backgroundColor='#ff8a80';"
+                                onclick="removeNote(${board.id}, ${index})">
+                                X
+                            </button>
+                        </div>
+                        <!-- Editable Note Content -->
+                        <textarea style="
+                            flex: 1;
+                            width: 100%; 
+                            border: none; 
+                            resize: none; 
+                            outline: none; 
+                            background-color: #ffffff; 
+                            padding: 12px; 
+                            border-radius: 8px; 
+                            font-size: 14px; 
+                            line-height: 1.6; 
+                            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);"
+                            oninput="updateNoteContent(${board.id}, ${index}, this.value)">${note.content}</textarea>
+                    </div>
+                `
+                )
+                .join('')}
+        </div>
+    `;
+}
+
+function openMenu(boardId, noteIndex) {
+    // Pass data if necessary (e.g., set it in the modal for context)
+    $('#menuModal').modal('show');
+}
+
+
+// Update note content dynamically
+function updateNoteContent(boardId, noteIndex, newContent) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        board.notes[noteIndex].content = newContent;
+    }
+}
+
+function deleteNote(boardId, noteIndex) {
+    const board = boards.find((b) => b.id === boardId);
+    if (board) {
+        const deletedNote = board.notes.splice(noteIndex, 1)[0];
+        logBoardChange(boardId, `Deleted Note: ${deletedNote.title || `Note ${noteIndex + 1}`}`);
+        renderBoards();
+    }
+}
+
+function openAddNoteModal(boardId, subBoardIndex = null) {
+    // Set board and sub-board context
+    document.getElementById('add-note-button').onclick = function () {
+        addNote(boardId, subBoardIndex);
+    };
+
+    // Reset modal inputs
+    document.getElementById('new-note-title').value = '';
+    document.getElementById('new-note-content').value = '';
+
+    // Show the modal
+    $('#addNoteModal').modal('show');
+}
+
+document.getElementById('add-note-button').addEventListener('click', () => {
+    const noteTitle = document.getElementById('new-note-title').value.trim();
+    const noteContent = document.getElementById('new-note-content').value.trim();
+    const boardId = getActiveBoardId(); // Replace with actual function to get active board ID
+
+    if (!noteTitle || !noteContent) {
+        alert('Both title and content are required.');
+        return;
+    }
+
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        const newNote = {
+            id: board.notes.length ? Math.max(...board.notes.map(n => n.id)) + 1 : 1,
+            title: noteTitle,
+            content: noteContent,
+            createdOn: new Date().toLocaleString(),
+        };
+        board.notes.push(newNote);
+
+        // Log history
+        logBoardChange(boardId, `Note "${noteTitle}" created.`);
+        renderBoards(); // Update the UI
+        $('#addNoteModal').modal('hide');
+    } else {
+        alert('Board not found.');
+    }
+});
+
+function addNote(boardId, subBoardIndex) {
+    const title = document.getElementById('new-note-title').value.trim();
+    const content = document.getElementById('new-note-content').value.trim();
+
+    if (!title || !content) {
+        alert('Both title and content are required!');
+        return;
+    }
+
+    const board = boards.find(b => b.id === boardId);
+    if (subBoardIndex === null) {
+        // Add note to the main board
+        board.notes.push({ title, content });
+    } else {
+        // Add note to the sub-board
+        board.subBoards[subBoardIndex].notes.push({ title, content });
+    }
+
+    renderBoards();
+    $('#addNoteModal').modal('hide');
+}
+
+console.log(`Opening modal for board ID: ${boardId}, Note Index: ${noteIndex}`);
+console.log(`Saving note: Board ID: ${boardId}, Note Index: ${noteIndex}, Content: "${updatedContent}"`);
+console.log('Updated boards array:', boards);
+
+// Render sub-boards for a board
+function renderSubBoards(board) {
+    const subBoards = board.subBoards;
+    if (!subBoards || subBoards.length === 0) {
+        return '<div class="no-subboards"></div>';
+    }
+
+    const styleElement = document.createElement('style');
+    styleElement.textContent = `
+        .sub-board {
+    background: linear-gradient(135deg, #ffffff, #ffffff);
+    border: 1px solid #90caf9;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+        .sub-board:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .sub-board-header {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2766ff;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .sub-board-body {
+            flex-grow: 1;
+            font-size: 0.9em;
+			border: 1px solid #ccc;
+            color: #424242;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 10px;
+        }
+
+        .sub-board-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+        }
+
+        .sub-board-footer button {
+            padding: 8px 16px;
+            font-size: 0.85em;
+            border-radius: 6px;
+            background-color: #42a5f5;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .sub-board-footer button:hover {
+            background-color: #1e88e5;
+        }
+    `;
+    document.head.appendChild(styleElement);
+
+    return `
+        <div class="sub-boards">
+            ${subBoards
+                .map(
+                    (subBoard, index) => `
+                    <div class="sub-board">
+                        <div class="sub-board-header">
+                            <span>${subBoard.title || 'Untitled Sub-Board'}</span>
+                            <button onclick="removeSubBoard(${board.id}, ${index})" style="background: transparent; border: none; color: #e53935; cursor: pointer; font-size: 1.2em;">&times;</button>
+                        </div>
+                        <div class="sub-board-body">
+                            <p><strong>Type:</strong> ${subBoard.type || 'No Type Provided'}</p>
+                            <div class="notes-container">
+                                ${renderSubBoardNotes(subBoard, board.id, index)}
+                            </div>
+                        </div>
+                        <div class="sub-board-footer">
+                            <button onclick="openAddNoteModal(${board.id}, ${index})">+ Add Note</button>
+                        </div>
+                    </div>`
+                )
+                .join('')}
+        </div>
+    `;
+}
+
+function removeSubBoard(boardId, subBoardIndex) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        board.subBoards.splice(subBoardIndex, 1);
+        renderBoards();
+    }
+}
+
+// Render notes in sub-boards
+function renderSubBoardNotes(subBoard, boardId, subBoardIndex) {
+    return `
+        <div class="sub-board-notes-container" style="
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 10px;">
+            ${subBoard.notes
+                .map(
+                    (note, index) => `
+                    <div class="note" 
+                        style="
+                            flex: 1 1 calc(30% - 20px); 
+                            display: flex; 
+                            flex-direction: column; 
+                            gap: 10px; 
+                            padding: 16px; 
+                            border-radius: 14px; 
+                            background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1); 
+                            transition: transform 0.2s ease, box-shadow 0.2s ease; 
+                            min-width: 340px;
+                            max-width: 340px;
+                            height: 220px;"
+                        onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 12px 24px rgba(0, 0, 0, 0.2)';"
+                        onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 8px 16px rgba(0, 0, 0, 0.1)';"
+                    >
+                        <!-- Note Title -->
+                        <div style="
+                            font-weight: bold; 
+                            font-size: 18px; 
+                            color: #37474f;
+                            border-bottom: 2px solid #b0bec5; 
+                            padding-bottom: 6px;">
+                            ${note.title || "Untitled Note"}
+                        </div>
+                        <!-- Editable Note Content -->
+                        <textarea style="
+                            flex: 1;
+                            width: 100%; 
+                            border: none; 
+                            resize: none; 
+                            outline: none; 
+                            background-color: #ffffff; 
+                            padding: 12px; 
+                            border-radius: 8px; 
+                            font-size: 14px; 
+                            line-height: 1.6; 
+                            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);"
+                            oninput="updateSubBoardNoteContent(${boardId}, ${subBoardIndex}, ${index}, this.value)">${note.content}</textarea>
+                        <!-- Remove Button -->
+                        <button class="remove-note" style="
+                            align-self: flex-end; 
+                            background-color: #ff8a80; 
+                            border: none; 
+                            color: white; 
+                            border-radius: 12px; 
+                            padding: 8px 16px; 
+                            font-size: 14px;
+                            cursor: pointer;
+                            transition: background-color 0.3s ease;"
+                            onmouseover="this.style.backgroundColor='#ff5252';"
+                            onmouseout="this.style.backgroundColor='#ff8a80';"
+                            onclick="removeSubBoardNote(${boardId}, ${subBoardIndex}, ${index})"
+                        >
+                            X
+                        </button>
+                    </div>
+                `
+                )
+                .join('')}
+        </div>
+    `;
+}
+
+function openSubBoardNoteModal(boardId, subBoardIndex, noteIndex) {
+    const board = boards.find(b => b.id === boardId);
+    const subBoard = board?.subBoards[subBoardIndex];
+
+    if (subBoard) {
+        const noteContent = subBoard.notes[noteIndex];
+        document.getElementById('noteContentTextarea').value = noteContent;
+
+        // Set data attributes for tracking the board and sub-board note
+        const saveButton = document.getElementById('saveNoteContentButton');
+        saveButton.dataset.boardId = boardId;
+        saveButton.dataset.subBoardIndex = subBoardIndex;
+        saveButton.dataset.noteIndex = noteIndex;
+        saveButton.dataset.isSubBoard = "true";  // To indicate it’s a sub-board note
+
+        // Show the modal
+        $('#noteContentModal').modal('show');
+    }
+}
+
+// Remove a note from a board
+function removeNote(boardId, index) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        const removedNote = board.notes[index];
+        board.notes.splice(index, 1);
+        logBoardChange(boardId, `Removed note from board: "${removedNote}"`);
+        renderBoards();
+    }
+}
+
+// Remove a note from a sub-board
+function removeSubBoardNote(boardId, subBoardIndex, noteIndex) {
+    const subBoard = boards.find(b => b.id === boardId).subBoards[subBoardIndex];
+    if (subBoard) {
+        const removedNote = subBoard.notes[noteIndex];
+        subBoard.notes.splice(noteIndex, 1);
+        logBoardChange(boardId, `Removed note from sub-board: ${subBoard.title} - "${removedNote}"`);
+        renderBoards();
+    }
+}
+
+// Show modal to add a note to a sub-board
+function showAddNoteModal(boardId, subBoardIndex) {
+    const noteContent = prompt("Enter note content:");
+    if (noteContent !== null) {
+        addNoteToSubBoard(boardId, subBoardIndex, noteContent);
+    }
+}
+
+// Add a note to a sub-board
+function addNoteToSubBoard(boardId, subBoardIndex, content) {
+    const subBoard = boards.find(b => b.id === boardId).subBoards[subBoardIndex];
+    if (subBoard) {
+        subBoard.notes.push(content);
+        logBoardChange(boardId, `Added note to sub-board: ${subBoard.title} - "${content}"`);
+        renderBoards();
+    }
+}
+
+// Add a note to a board
+function addNote(boardId, subBoardIndex) {
+    const title = document.getElementById('new-note-title').value.trim();
+    const content = document.getElementById('new-note-content').value.trim();
+
+    if (!title || !content) {
+        alert('Both title and content are required!');
+        return;
+    }
+
+    const board = boards.find(b => b.id === boardId);
+    if (subBoardIndex === null) {
+        // Add note to the main board
+        board.notes.push({ title, content });
+    } else {
+        // Add note to the sub-board
+        board.subBoards[subBoardIndex].notes.push({ title, content });
+    }
+
+    // Re-render the UI and close the modal
+    renderBoards();
+    $('#addNoteModal').modal('hide');
+}
+
+// Update a note in a board
+function updateNote(boardId, index, newValue) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        board.notes[index] = newValue;
+    }
+}
+
+// Update a note in a sub-board
+function updateSubBoardNote(boardId, subBoardIndex, noteIndex, newValue) {
+    const subBoard = boards.find(b => b.id === boardId).subBoards[subBoardIndex];
+    if (subBoard) {
+        subBoard.notes[noteIndex] = newValue;
+    }
+}
+
+// Confirm removal of a board
+function confirmRemoveBoard(boardId) {
+    if (confirm('Are you sure you want to remove this board?')) {
+        removeBoard(boardId);
+    }
+}
+
+// Remove a board
+function removeBoard(boardId) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        logBoardChange(boardId, `Removed board: ${board.title}`);
+        boards = boards.filter(b => b.id !== boardId);
+        renderBoards();
+    }
+}
+
+// Show modal to add a sub-board
+function showSubBoardModal(boardId) {
+    const modal = $('#subBoardModal');
+    const addButton = document.getElementById('add-sub-board-confirm');
+    addButton.onclick = function() {
+        const subBoardTitle = document.getElementById('sub-board-title-input').value;
+        const subBoardType = document.getElementById('sub-board-type-select').value;
+        addSubBoard(boardId, subBoardTitle, subBoardType);
+        modal.modal('hide');
+    };
+    modal.modal('show');
+}
+
+// Add a sub-board
+function addSubBoard(boardId, title, type) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        const newSubBoard = { title, type, notes: [] };
+        board.subBoards.push(newSubBoard);
+        logBoardChange(boardId, `Added sub-board: ${title}`);
+        renderBoards();
+    }
+}
+
+// Remove a sub-board
+function removeSubBoard(boardId, subBoardIndex) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        const removedSubBoard = board.subBoards[subBoardIndex];
+        board.subBoards.splice(subBoardIndex, 1);
+        logBoardChange(boardId, `Removed sub-board: ${removedSubBoard.title}`);
+        renderBoards();
+    }
+}
+
+// View board history in a modal
+function viewBoardHistory(boardId) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        const historyList = document.getElementById('historyList');
+        historyList.innerHTML = ''; // Clear previous history
+
+        if (board.history.length > 0) {
+            board.history.forEach(entry => {
+                const listItem = document.createElement('li');
+                listItem.className = 'list-group-item';
+                listItem.textContent = `${entry.time}: ${entry.description}`;
+                historyList.appendChild(listItem);
+            });
+        } else {
+            const emptyMessage = document.createElement('li');
+            emptyMessage.className = 'list-group-item text-muted';
+            emptyMessage.textContent = 'No history available.';
+            historyList.appendChild(emptyMessage);
+        }
+
+        // Show the modal
+        $('#historyModal').modal('show');
+    }
+}
+
+
+// Resizing functionality
+let isResizing = false;
+let currentNote;
+
+function initResize(event, boardId, noteIndex) {
+    isResizing = true;
+    currentNote = { boardId, noteIndex };
+    document.addEventListener('mousemove', resizeNote);
+    document.addEventListener('mouseup', stopResize);
+}
+
+function resizeNote(event) {
+    if (isResizing) {
+        const board = boards.find(b => b.id === currentNote.boardId);
+        const note = document.querySelectorAll('.note')[currentNote.noteIndex];
+        const newHeight = Math.min(Math.max(event.clientY - note.getBoundingClientRect().top, 30), 300);
+        note.style.height = `${newHeight}px`;
+        const textArea = note.querySelector('textarea');
+        textArea.style.height = `${newHeight}px`;
+    }
+}
+
+function stopResize() {
+    isResizing = false;
+    document.removeEventListener('mousemove', resizeNote);
+    document.removeEventListener('mouseup', stopResize);
+}
+
+// Initialize resizing for sub-board notes
+function initResizeSubBoardNote(event, boardId, subBoardIndex, noteIndex) {
+    isResizing = true;
+    currentNote = { boardId, subBoardIndex, noteIndex, type: 'subBoardNote' };
+    document.addEventListener('mousemove', resizeSubBoardNote);
+    document.addEventListener('mouseup', stopResize);
+}
+
+// Resizing for sub-board notes
+function resizeSubBoardNote(event) {
+    if (isResizing) {
+        const subBoard = boards.find(b => b.id === currentNote.boardId).subBoards[currentNote.subBoardIndex];
+        const note = document.querySelectorAll('.sub-board .note')[currentNote.noteIndex];
+        const newHeight = Math.min(Math.max(event.clientY - note.getBoundingClientRect().top, 30), 300);
+        note.style.height = `${newHeight}px`;
+        const textArea = note.querySelector('textarea');
+        textArea.style.height = `${newHeight}px`;
+    }
+}
+
+// Export functionality
+function exportBoards() {
+    const exportData = boards.map(({ history, ...rest }) => rest);
+    const dataStr = JSON.stringify(exportData, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'boards.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+	
+}
+
+// Show the export modal on "Export Boards" button click
+document.getElementById('export-boards-button').addEventListener('click', function () {
+    $('#exportModal').modal('show');
+});
+
+function handleExport() {
+    const fileName = document.getElementById('exportFileName').value.trim() || 'boards';
+    const format = document.getElementById('exportFormat').value;
+
+    if (!boards || boards.length === 0) {
+        alert("No data available to export.");
+        return;
+    }
+
+    if (format === 'json') {
+        exportToFile(boards, `${fileName}.json`, 'application/json', data => JSON.stringify(data, null, 2));
+    } else if (format === 'xlsx') {
+        exportToFile(boards, `${fileName}.xlsx`, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', createXLSX);
+    }
+
+    $('#exportModal').modal('hide');
+}
+
+function exportToFile(data, fileName, mimeType, formatFunction) {
+    try {
+        const blobData = mimeType === 'application/json' ? formatFunction(data) : formatFunction(data);
+        const blob = new Blob([blobData], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        alert(`Export successful: ${fileName}`);
+    } catch (error) {
+        alert(`Error exporting: ${error.message}`);
+    }
+}
+
+function createXLSX(data) {
+    const workbook = XLSX.utils.book_new();
+
+    data.forEach((board, index) => {
+        const metaSheetData = [
+            ['Attribute', 'Value'],
+            ['Title', board.title],
+            ['Type', board.type],
+            ['Color', board.color]
+        ];
+        XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(metaSheetData), `Board ${index + 1} Meta`);
+
+        if (board.notes.length > 0) {
+            const notesSheet = [['Notes'], ...board.notes.map(note => [note])];
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(notesSheet), `Board ${index + 1} Notes`);
+        }
+
+        (board.spreadsheets || []).forEach((spreadsheet, sheetIndex) => {
+            const sheetData = XLSX.utils.aoa_to_sheet(spreadsheet.data || []);
+            XLSX.utils.book_append_sheet(workbook, sheetData, `Board ${index + 1} - Sheet ${sheetIndex + 1}`);
+        });
+    });
+
+    return XLSX.write(workbook, { bookType: 'xlsx', type: 'binary' });
+}
+
+// Perform export when "Confirm Export" is clicked
+// Attach export logic to "Confirm Export" button
+document.getElementById('confirmExportButton').addEventListener('click', function () {
+    console.log("Export button clicked");
+    const fileName = document.getElementById('exportFileName').value.trim() || 'boards';
+    const format = document.getElementById('exportFormat').value;
+
+    console.log("File Name:", fileName);
+    console.log("Format:", format);
+
+    if (!boards || boards.length === 0) {
+        alert("No data available to export.");
+        return;
+    }
+
+    if (format === 'json') {
+        exportAsJSON(fileName);
+    } else if (format === 'xlsx') {
+        exportAsXLSX(fileName);
+    }
+
+    $('#exportModal').modal('hide');
+});
+
+function exportAsJSON(fileName) {
+    try {
+        const dataToExport = boards.map(board => ({
+            ...board,
+            spreadsheets: board.spreadsheets || [] // Include spreadsheets safely
+        }));
+
+        const blob = new Blob([JSON.stringify(dataToExport, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `${fileName}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        alert("Export successful as JSON.");
+    } catch (error) {
+        alert("Error exporting JSON. Check the console for details.");
+        console.error(error);
+    }
+}
+
+function exportAsXLSX(fileName) {
+    try {
+        const workbook = XLSX.utils.book_new();
+
+        boards.forEach((board, index) => {
+            const metaDataSheet = [
+                ['Attribute', 'Value'],
+                ['Title', board.title],
+                ['Type', board.type],
+                ['Color', board.color]
+            ];
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(metaDataSheet), `Board ${index + 1} Meta`);
+
+            if (board.notes && board.notes.length > 0) {
+                const notesSheet = [['Notes'], ...board.notes.map(note => [note])];
+                XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(notesSheet), `Board ${index + 1} Notes`);
+            }
+
+            if (board.spreadsheets) {
+                board.spreadsheets.forEach((spreadsheet, sheetIndex) => {
+                    const sheetData = XLSX.utils.aoa_to_sheet(spreadsheet.data || []);
+                    XLSX.utils.book_append_sheet(workbook, sheetData, `Board ${index + 1} Sheet ${sheetIndex + 1}`);
+                });
+            }
+        });
+
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+        alert("Export successful as XLSX.");
+    } catch (error) {
+        alert("Error exporting XLSX. Check the console for details.");
+        console.error(error);
+    }
+}
+
+function exportAllAsXLSX(fileName) {
+    try {
+        const workbook = XLSX.utils.book_new();
+
+        boards.forEach((board, index) => {
+            const metaSheetData = [
+                ['Attribute', 'Value'],
+                ['Title', board.title],
+                ['Type', board.type],
+                ['Color', board.color]
+            ];
+            XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(metaSheetData), `Board ${index + 1} Meta`);
+
+            if (board.notes.length > 0) {
+                const notesSheet = [['Notes'], ...board.notes.map(note => [note])];
+                XLSX.utils.book_append_sheet(workbook, XLSX.utils.aoa_to_sheet(notesSheet), `Board ${index + 1} Notes`);
+            }
+        });
+
+        XLSX.writeFile(workbook, `${fileName}.xlsx`);
+        console.log("XLSX export successful:", fileName);
+    } catch (error) {
+        console.error("Error during XLSX export:", error);
+        alert("An error occurred during XLSX export. Check the console for details.");
+    }
+}
+
+document.getElementById('select-file-button').addEventListener('click', function () {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json,.xlsx';
+
+    input.onchange = function (event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const fileName = file.name.toLowerCase();
+        if (fileName.endsWith('.json')) {
+            importFromJSON(file);
+        } else if (fileName.endsWith('.xlsx')) {
+            importFromXLSX(file);
+        } else {
+            alert("Unsupported file format. Please upload a JSON or XLSX file.");
+        }
+    };
+
+    input.click();
+});
+
+function importFromJSON(file) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        try {
+            const importedData = JSON.parse(event.target.result);
+            if (!Array.isArray(importedData)) throw new Error("Invalid JSON structure.");
+
+            boards = importedData.map(board => ({
+                ...board,
+                spreadsheets: board.spreadsheets || []
+            }));
+
+            alert("Import successful from JSON.");
+            renderBoards();
+        } catch (error) {
+            alert("Error importing JSON. Check the console for details.");
+            console.error(error);
+        }
+    };
+    reader.readAsText(file);
+}
+
+function importFromXLSX(file) {
+    const reader = new FileReader();
+    reader.onload = function (event) {
+        try {
+            const data = new Uint8Array(event.target.result);
+            const workbook = XLSX.read(data, { type: 'array' });
+
+            const importedBoards = [];
+            workbook.SheetNames.forEach(sheetName => {
+                const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+                if (sheetName.includes('Meta')) {
+                    const boardMeta = Object.fromEntries(sheetData.map(([key, value]) => [key, value]));
+                    importedBoards.push({ ...boardMeta, notes: [], spreadsheets: [] });
+                } else if (sheetName.includes('Notes')) {
+                    const board = importedBoards[importedBoards.length - 1];
+                    board.notes = sheetData.flat().slice(1);
+                } else {
+                    const board = importedBoards[importedBoards.length - 1];
+                    board.spreadsheets.push({ name: sheetName, data: sheetData });
+                }
+            });
+
+            boards = importedBoards;
+            alert("Import successful from XLSX.");
+            renderBoards();
+        } catch (error) {
+            alert("Error importing XLSX. Check the console for details.");
+            console.error(error);
+        }
+    };
+    reader.readAsArrayBuffer(file);
+}
+
+console.log("Boards data:", boards);
+
+// Bind search input event to render boards based on search
+document.getElementById('search-input').addEventListener('input', renderBoards);
+
+function showAddTableModal(boardId) {
+    const modal = $('#addTableModal');
+    const modalFooter = modal.find('.modal-footer');
+
+    // Add or reuse the Create Spreadsheet Button
+    let createSpreadsheetButton = document.getElementById('create-spreadsheet-button');
+    if (!createSpreadsheetButton) {
+        createSpreadsheetButton = document.createElement('button');
+        createSpreadsheetButton.id = 'create-spreadsheet-button';
+        createSpreadsheetButton.className = 'btn btn-primary ml-2';
+        createSpreadsheetButton.textContent = 'Create Spreadsheet';
+        modalFooter.append(createSpreadsheetButton);
+    }
+
+    // Add or reuse the Create Table Button
+    let addTableButton = document.getElementById('add-table-confirm');
+    if (!addTableButton) {
+        addTableButton = document.createElement('button');
+        addTableButton.id = 'add-table-confirm';
+        addTableButton.className = 'btn btn-secondary ml-2';
+        addTableButton.textContent = 'Create Table';
+        modalFooter.append(addTableButton);
+    }
+
+    // Remove previous event listeners and reassign
+    const newSpreadsheetButton = createSpreadsheetButton.cloneNode(true);
+    const newTableButton = addTableButton.cloneNode(true);
+    createSpreadsheetButton.replaceWith(newSpreadsheetButton);
+    addTableButton.replaceWith(newTableButton);
+
+    // Event Listener for Spreadsheet Button
+    newSpreadsheetButton.addEventListener('click', function () {
+        const rows = parseInt(document.getElementById('table-rows-input').value, 10);
+        const columns = parseInt(document.getElementById('table-columns-input').value, 10);
+
+        if (!rows || !columns || rows > 15 || columns > 12) {
+            alert("Error: Rows must be between 1 and 15, and columns must be between 1 and 12.");
+        } else {
+            createSpreadsheet(boardId, rows, columns);
+            modal.modal('hide');
+        }
+    });
+
+    // Event Listener for Table Button
+    newTableButton.addEventListener('click', function () {
+        const rows = parseInt(document.getElementById('table-rows-input').value, 10);
+        const columns = parseInt(document.getElementById('table-columns-input').value, 10);
+
+        if (!rows || !columns || rows > 15 || columns > 12) {
+            alert("Error: Rows must be between 1 and 15, and columns must be between 1 and 12.");
+        } else {
+            createTable(boardId, rows, columns);
+            modal.modal('hide');
+        }
+    });
+
+    modal.modal('show');
+}
+
+function createSpreadsheet(boardId, rows, columns) {
+    const board = boards.find(b => b.id === boardId);
+
+    if (!board) {
+        console.error(`Board with ID ${boardId} not found.`);
+        return;
+    }
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const tableData = Array.from({ length: rows }, () => Array(columns).fill(''));
+
+    // Create formula bar dynamically
+    const formulaBarContainer = document.createElement('div');
+    formulaBarContainer.className = 'formula-bar-container';
+    formulaBarContainer.style = `
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #007bff, #0056b3);
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        color: white;
+    `;
+    const icon = document.createElement('i');
+    icon.className = 'bi bi-calculator-fill';
+    icon.style = 'margin-right: 10px; font-size: 1.2rem; color: #fff;';
+    formulaBarContainer.appendChild(icon);
+
+    const formulaBar = document.createElement('input');
+    formulaBar.type = 'text';
+    formulaBar.className = 'formula-bar';
+    formulaBar.placeholder = 'Type a formula here...';
+    formulaBar.style = `
+        flex: 1;
+        padding: 10px;
+        border: none;
+        border-radius: 6px;
+        outline: none;
+        font-size: 1rem;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.3s, transform 0.3s;
+    `;
+    formulaBar.addEventListener('focus', () => {
+        formulaBar.style.boxShadow = '0 0 10px rgba(255, 255, 255, 0.8)';
+        formulaBar.style.transform = 'scale(1.02)';
+    });
+    formulaBar.addEventListener('blur', () => {
+        formulaBar.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.2)';
+        formulaBar.style.transform = 'scale(1)';
+    });
+    formulaBarContainer.appendChild(formulaBar);
+
+    const selectedCell = document.createElement('span');
+    selectedCell.className = 'selected-cell';
+    selectedCell.textContent = 'A1'; // Default selected cell
+    selectedCell.style = `
+        margin-left: 10px;
+        font-size: 1rem;
+        font-weight: bold;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 5px 10px;
+        border-radius: 4px;
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    `;
+    formulaBarContainer.appendChild(selectedCell);
+
+    // Create spreadsheet table dynamically
+    const spreadsheetTable = document.createElement('table');
+    spreadsheetTable.className = 'table table-bordered board-table';
+    spreadsheetTable.innerHTML = `
+        <thead>
+            <tr>
+                <th></th> <!-- Empty corner cell -->
+                ${Array.from({ length: columns }, (_, i) => `<th>${alphabet[i]}</th>`).join('')}
+            </tr>
+        </thead>
+        <tbody>
+            ${Array.from({ length: rows }, (_, rowIndex) => `
+                <tr>
+                    <th>${rowIndex + 1}</th> <!-- Row numbers -->
+                    ${Array.from({ length: columns }, (_, colIndex) => `
+                        <td contenteditable="true" 
+                            data-cell-id="${String.fromCharCode(65 + colIndex)}${rowIndex + 1}" 
+                        </td>
+                    `).join('')}
+                </tr>
+            `).join('')}
+        </tbody>
+    `;
+
+    // Container for the spreadsheet and formula bar
+    const spreadsheetContainer = document.createElement('div');
+    spreadsheetContainer.className = 'spreadsheet-container';
+    spreadsheetContainer.appendChild(formulaBarContainer);
+    spreadsheetContainer.appendChild(spreadsheetTable);
+
+    if (!board.tables) {
+        board.tables = [];
+    }
+
+    board.tables.push({ html: spreadsheetContainer.outerHTML, data: tableData, type: 'spreadsheet' });
+    logBoardChange(boardId, `Added a spreadsheet with ${rows} rows and ${columns} columns`);
+    renderBoards();
+
+    // Attach dynamic event listeners for formula bar functionality
+    attachSpreadsheetListeners(board.tables.length - 1, boardId);
+}
+
+// Add event listener to each cell dynamically
+Array.from(spreadsheetTable.querySelectorAll('td')).forEach((cell) => {
+    cell.addEventListener('blur', function () {
+        const cellId = this.getAttribute('data-cell-id');
+        const row = getCellRow(cellId);
+        const col = getCellColumn(cellId);
+        const value = this.textContent;
+
+        updateCellValue(boardId, board.tables?.length - 1, row, col, value);
+    });
+});
+
+function updateCellValue(boardId, tableIndex, row, col, value) {
+    const board = boards.find(b => b.id === boardId);
+    if (board && board.tables[tableIndex]) {
+        const tableData = board.tables[tableIndex].data;
+        tableData[row][col] = value;
+
+        // Trigger recalculation if the value impacts formulas
+        const container = document.querySelectorAll('.spreadsheet-container')[tableIndex];
+        const formulas = board.tables[tableIndex].formulas || {}; // Ensure formulas are stored
+        recalculateSpreadsheet(tableData, formulas, container);
+    } else {
+        console.error(`Failed to update cell value. Board or table not found.`);
+    }
+}
+
+function attachSpreadsheetListeners(tableIndex, boardId) {
+    const board = boards.find(b => b.id === boardId);
+    if (!board || !board.tables[tableIndex]) {
+        console.error(`Board or Table not found for boardId: ${boardId}, tableIndex: ${tableIndex}`);
+        return;
+    }
+
+    const container = document.querySelectorAll('.spreadsheet-container')[tableIndex];
+    const formulaBar = container.querySelector('.formula-bar');
+    const selectedCellDisplay = container.querySelector('.selected-cell');
+    let activeCell = null;
+    let activeCellId = '';
+    const tableData = board.tables[tableIndex].data;
+    const formulas = {}; // Stores formulas for recalculations
+
+    // Cell Selection and Formula Display
+    container.querySelector('table').addEventListener('click', (e) => {
+        if (e.target.tagName === 'TD') {
+            activeCell = e.target;
+            activeCellId = e.target.getAttribute('data-cell-id');
+            selectedCellDisplay.textContent = `Selected: ${activeCellId}`;
+            formulaBar.value = formulas[activeCellId] || activeCell.textContent || '';
+        }
+    });
+
+    // Formula Entry and Updates
+    formulaBar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && activeCell) {
+            const formula = formulaBar.value.trim();
+            if (formula.startsWith('(')) {
+                formulas[activeCellId] = formula; // Store formula for recalculation
+                try {
+                    const result = evaluateFormula(formula, tableData);
+                    tableData[getCellRow(activeCellId)][getCellColumn(activeCellId)] = result;
+                    activeCell.textContent = result;
+                } catch (err) {
+                    alert(`Error in formula: ${err.message}`);
+                }
+            } else {
+                activeCell.textContent = formula;
+                tableData[getCellRow(activeCellId)][getCellColumn(activeCellId)] = formula;
+            }
+
+            recalculateSpreadsheet(tableData, formulas, container);
+        }
+    });
+}
+
+// Evaluate Formula
+function evaluateFormula(formula, tableData) {
+    const isRange = /[A-Z][0-9]+:[A-Z][0-9]+/;
+    const isCellRef = /[A-Z][0-9]+/g;
+
+    // Average Formula Parsing (e.g., AVG(A1:A3))
+    if (formula.startsWith('(AVG')) {
+        const rangeMatch = formula.match(isRange);
+        if (!rangeMatch) throw new Error('Invalid range in AVG formula.');
+        const range = rangeMatch[0].split(':');
+        const [start, end] = range.map(getCellIndex);
+        const values = getRangeValues(start, end, tableData);
+        return values.reduce((sum, val) => sum + val, 0) / values.length;
+    }
+
+    // Basic Arithmetic Formula Parsing
+    return formula.replace(isCellRef, (match) => {
+        const [row, col] = getCellIndex(match);
+        return tableData[row]?.[col] || 0;
+    }).replace(/[A-Z][0-9]+/g, '0'); // Replace unresolved cells with 0
+}
+
+// Get Cell Index from ID (e.g., A1 -> [row, col])
+function getCellIndex(cellId) {
+    const col = cellId.charCodeAt(0) - 65; // 'A' -> 0, 'B' -> 1
+    const row = parseInt(cellId.slice(1), 10) - 1; // '1' -> 0
+    return [row, col];
+}
+
+// Get Range Values for Formulas
+function getRangeValues(start, end, tableData) {
+    const [startRow, startCol] = start;
+    const [endRow, endCol] = end;
+    const values = [];
+
+    for (let row = startRow; row <= endRow; row++) {
+        for (let col = startCol; col <= endCol; col++) {
+            values.push(parseFloat(tableData[row]?.[col]) || 0);
+        }
+    }
+
+    return values;
+}
+
+// Recalculate All Formulas
+function recalculateSpreadsheet(tableData, formulas, container) {
+    Object.keys(formulas).forEach((cellId) => {
+        const formula = formulas[cellId];
+        if (formula) {
+            try {
+                const result = evaluateFormula(formula, tableData);
+                tableData[getCellRow(cellId)][getCellColumn(cellId)] = result;
+                const cellElement = container.querySelector(`[data-cell-id="${cellId}"]`);
+                if (cellElement) {
+                    cellElement.textContent = result;
+                }
+            } catch (err) {
+                console.error(`Error recalculating cell ${cellId}: ${err.message}`);
+            }
+        }
+    });
+}
+
+function getCellColumn(cellId) {
+    return cellId.charCodeAt(0) - 65; // 'A' -> 0
+}
+
+function getCellRow(cellId) {
+    return parseInt(cellId.slice(1), 10) - 1; // '1' -> 0
+}
+
+// Highlight Selected Cell
+container.querySelector('table').addEventListener('mouseover', (e) => {
+    if (e.target.tagName === 'TD') {
+        e.target.style.backgroundColor = '#f0f8ff'; // Light highlight
+    }
+});
+
+container.querySelector('table').addEventListener('mouseout', (e) => {
+    if (e.target.tagName === 'TD') {
+        e.target.style.backgroundColor = ''; // Reset to default
+    }
+});
+
+// Add Animation to Formula Bar on Activation
+formulaBar.addEventListener('focus', () => {
+    formulaBar.style.transition = 'box-shadow 0.3s, transform 0.3s';
+    formulaBar.style.boxShadow = '0 0 15px rgba(0, 123, 255, 0.7)';
+    formulaBar.style.transform = 'scale(1.05)';
+});
+
+formulaBar.addEventListener('blur', () => {
+    formulaBar.style.boxShadow = 'inset 0 2px 4px rgba(0, 0, 0, 0.2)';
+    formulaBar.style.transform = 'scale(1)';
+});
+
+document.getElementById('create-spreadsheet-button').onclick = function () {
+    const rows = parseInt(document.getElementById('table-rows-input').value, 10);
+    const columns = parseInt(document.getElementById('table-columns-input').value, 10);
+
+    if (!rows || !columns || rows > 15 || columns > 12) {
+        alert("Error: Rows must be between 1 and 15, and columns must be between 1 and 12.");
+        return;
+    }
+
+    createSpreadsheet(boardId, rows, columns);
+    $('#addTableModal').modal('hide');
+};
+
+function createTable(boardId, rows, columns) {
+    const board = boards.find(b => b.id === boardId);
+
+    if (!board) {
+        console.error(`Board with ID ${boardId} not found.`);
+        return;
+    }
+
+    const tableData = Array.from({ length: rows }, () => Array(columns).fill(''));
+    const tableHTML = `
+        <table class="table table-bordered board-table">
+            <tbody>
+                ${Array.from({ length: rows }, (_, rowIndex) => `
+                    <tr>
+                        ${Array.from({ length: columns }, () => `
+                            <td contenteditable="true"></td>
+                        `).join('')}
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>`;
+
+    if (!board.tables) {
+        board.tables = [];
+    }
+
+    board.tables.push({ html: tableHTML, data: tableData, type: 'table' });
+    logBoardChange(boardId, `Added a table with ${rows} rows and ${columns} columns`);
+    renderBoards();
+}
+
+function removeTable(boardId, tableIndex) {
+    const board = boards.find(b => b.id === boardId);
+    if (board && board.tables) {
+        board.tables.splice(tableIndex, 1); // Remove the table from the array
+        logBoardChange(boardId, `Removed table or spreadsheet.`);
+        renderBoards();
+    }
+}
+
+function updateCell(boardId, tableIndex, rowIndex, colIndex, value) {
+    const board = boards.find(b => b.id === boardId);
+    if (board && board.tables[tableIndex]) {
+        board.tables[tableIndex].data[rowIndex][colIndex] = value; // Update the stored data
+    }
+
+}
+
+let activeCell = null;
+let activeCellId = '';
+
+document.addEventListener('DOMContentLoaded', () => {
+    const formulaBar = document.getElementById('formula-bar');
+    const tableContainer = document.querySelector('.tables-container');
+
+    // Update Formula Bar on Cell Selection
+    tableContainer.addEventListener('click', (e) => {
+        if (e.target.tagName === 'TD') {
+            activeCell = e.target;
+            const col = e.target.cellIndex; // Get column index
+            const row = e.target.parentElement.rowIndex; // Get row index
+            activeCellId = `${String.fromCharCode(65 + col)}${row}`; // Convert column index to letter
+            formulaBar.value = activeCell.textContent; // Display cell content
+        }
+    });
+
+    // Update Cell Content on Formula Bar Change
+    formulaBar.addEventListener('input', () => {
+        if (activeCell) {
+            activeCell.textContent = formulaBar.value; // Update cell
+        }
+    });
+
+    // Parse and Execute Formulas
+    formulaBar.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && activeCell) {
+            const formula = formulaBar.value.trim();
+            if (formula.startsWith('=')) {
+                try {
+                    const result = evaluateFormula(formula.substring(1)); // Exclude '='
+                    activeCell.textContent = result;
+                } catch (err) {
+                    alert('Error in formula: ' + err.message);
+                }
+            }
+        }
+    });
+});
+
+// Formula Evaluation
+function evaluateFormula(formula) {
+    const cells = document.querySelectorAll('.board-table td');
+    const cellValues = {};
+
+    // Map cell references to values
+    cells.forEach((cell, index) => {
+        const col = index % cells[0].parentElement.children.length;
+        const row = Math.floor(index / cells[0].parentElement.children.length) + 1;
+        const cellId = `${String.fromCharCode(65 + col)}${row}`;
+        cellValues[cellId] = parseFloat(cell.textContent) || 0;
+    });
+
+    // Replace cell references with their values
+    const parsedFormula = formula.replace(/[A-Z][0-9]+/g, (match) => {
+        return cellValues[match] !== undefined ? cellValues[match] : 0;
+    });
+
+    return Function(`return ${parsedFormula}`)();
+}
+
+// Import data function
+function importData(data) {
+    try {
+        const parsedData = JSON.parse(data);
+
+        // Import boards
+        boards = parsedData.boards || [];
+        boards.forEach((board) => logBoardChange(board.id, `Board "${board.title}" imported.`));
+
+        // Import tasks
+        tasks = parsedData.tasks || [];
+        tasks.forEach((task) => logTaskChange(task.id, `Task "${task.title}" imported.`));
+
+        // Re-render boards and tasks
+        renderBoards();
+        alert('Data imported successfully!');
+    } catch (error) {
+        console.error('Error importing data:', error);
+        alert('Failed to import data. Please check the file format.');
+    }
+}
+
+// Log task changes for history
+function logTaskChange(taskId, description) {
+    const task = tasks.find((t) => t.id === taskId);
+    if (task) {
+        task.history = task.history || [];
+        task.history.push({
+            description,
+            time: new Date().toLocaleString(),
+        });
+    }
+}
+
+// Handle file input for import
+document.getElementById('import-btn').addEventListener('click', () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            const text = await file.text();
+            importData(text);
+        }
+    };
+    input.click();
+});
+
+// Log task changes for history
+function logTaskChange(taskId, description) {
+    const task = tasks.find((t) => t.id === taskId);
+    if (task) {
+        task.history = task.history || [];
+        task.history.push({
+            description,
+            time: new Date().toLocaleString(),
+        });
+    }
+}
+
+function openNoteModal(boardId, noteIndex) {
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        // Populate the textarea with the note content
+        document.getElementById('noteContentTextarea').value = board.notes[noteIndex] || "";
+
+        // Attach boardId and noteIndex to the Save button
+        const saveButton = document.getElementById('saveNoteContentButton');
+        saveButton.setAttribute('data-board-id', boardId);
+        saveButton.setAttribute('data-note-index', noteIndex);
+
+        // Show the modal
+        $('#noteContentModal').modal('show');
+    } else {
+        console.error('Error: Board not found for ID:', boardId);
+    }
+}
+
+document.getElementById('saveNoteContentButton').addEventListener('click', function () {
+    // Fetch boardId and noteIndex from Save button's attributes
+    const boardId = parseInt(this.getAttribute('data-board-id'), 10);
+    const noteIndex = parseInt(this.getAttribute('data-note-index'), 10);
+    const updatedContent = document.getElementById('noteContentTextarea').value.trim();
+
+    if (!updatedContent) {
+        alert('Note content cannot be empty!');
+        return;
+    }
+
+    // Locate the board and update the note
+    const board = boards.find(b => b.id === boardId);
+    if (board) {
+        board.notes[noteIndex] = updatedContent;
+
+        console.log(`Note updated for Board ID: ${boardId}, Note Index: ${noteIndex}, Content: "${updatedContent}"`);
+
+        renderBoards(); // Refresh the UI
+        $('#noteContentModal').modal('hide'); // Close the modal
+    } else {
+        alert('Error: Board not found. Unable to save note.');
+    }
+});
+
+if (!existingSpreadsheetButton) {
+    const createSpreadsheetButton = document.createElement('button');
+    createSpreadsheetButton.id = 'create-spreadsheet-button';
+    createSpreadsheetButton.className = 'btn btn-primary ml-2';
+    createSpreadsheetButton.textContent = 'Create Spreadsheet';
+    modalFooter.append(createSpreadsheetButton);
+}
+
+	</script>
+</body>
+</html>
+	
